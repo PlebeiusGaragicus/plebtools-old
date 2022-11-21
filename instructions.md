@@ -1,5 +1,5 @@
 # Instructions for Hello World
 
-Instructions go here. These appear to the user in the UI on the Service page under **Instructions**.
+A very simple utility that empowes you to do your own research on the blockchain!
 
-You are allowed to include basic [Markdown formatting](https://www.markdownguide.org/basic-syntax).
+[Check out this app's repository!](https://github.com/PlebeiusGaragicus/eOS-plebtools-monitor).
