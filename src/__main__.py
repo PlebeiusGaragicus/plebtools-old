@@ -63,7 +63,7 @@ def main():
         web_interface.main_page,
         host="0.0.0.0",
         auto_open_webbrowser=True,
-        open_webbrowser_tab=True,
+        # open_webbrowser_tab=True,
         port=config.PORT,
         debug=config.DEBUG,
         cdn=False)
