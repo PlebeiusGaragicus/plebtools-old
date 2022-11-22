@@ -1,6 +1,11 @@
-FROM python:slim-buster
+FROM python:3.11.0-alpine
+# FROM python:3.11.0-alpine3.16
+# FROM python:3.8.3-alpine
+# FROM python:3.8.3
+# FROM python:slim-buster
 
 # RUN apt-get update
+# RUN apt-get install -y python3 python3-pip
 
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
@@ -10,12 +15,13 @@ COPY /data /data
 COPY /src /app
 
 
-# TODO does this matter?  Can I just use the default.. like 5000?
 
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 
 USER 1000
+
+# TODO does this matter?  Can I just use the default.. like 5000?
 EXPOSE 8069
 
 # CMD [ "python", "-m", "this_app" ]
