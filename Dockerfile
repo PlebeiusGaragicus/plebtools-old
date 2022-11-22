@@ -22,7 +22,7 @@ RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 USER 1000
 
 # TODO does this matter?  Can I just use the default.. like 5000?
-EXPOSE 8069
+EXPOSE 8080
 
 # CMD [ "python", "-m", "this_app" ]
 # ENTRYPOINT [ "python", "-m", "app" ]
