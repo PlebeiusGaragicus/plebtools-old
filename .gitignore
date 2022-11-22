@@ -1,5 +1,9 @@
-hello-world.s9pk
-image.tar
-scripts/*.js
 .DS_Store
-.vscode/
+
+venv/
+__pycache__/
+
+*.s9pk
+image.tar
+
+# .vscode/

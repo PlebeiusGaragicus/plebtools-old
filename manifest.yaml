@@ -1,5 +1,6 @@
 # The package identifier used by the OS. This must be unique amongst all other known packages
-id: plebg_plebtools
+# underscore is not allowed (apparently)
+id: plebg-plebtools
 
  # A human readable service title
 title: "PlebTools"
@@ -16,7 +17,7 @@ release-notes: >-
   more to come...
 
 
-# The type of license for the project. Include the LICENSE in the root of the project directory. A license is required for a Start9 package.
+# The type of license for the project Include the LICENSE in the root of the project directory. A license is required for a Start9 package.
 license: mit
 
 # The Start9 wrapper repository URL for the package. This repo contains the manifest file (this), any scripts necessary for configuration, backups, actions, or health checks (more below). This key must exist. But could be embedded into the source repository. 

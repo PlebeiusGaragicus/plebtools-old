@@ -1,3 +1,4 @@
 #!/bin/sh
 
-exec tini hello-world
+# ENTRYPOINT [ "python", "-m", "app" ]
+python -m app

@@ -21,11 +21,6 @@ install:
 clean:
 	rm -f image.tar
 	rm -f $(PKG_ID).s9pk
-# wait.. why the fuck would it delete the .js files???
-	rm -f scripts/*.js
-
-# scripts/embassy.js: $(TS_FILES)
-# 	deno bundle scripts/embassy.ts scripts/embassy.js
 
 image.tar: Dockerfile docker_entrypoint.sh $(PY_FILES)
 	docker buildx build --tag $(PKG_ID)/main:$(PKG_VERSION) --platform=linux/arm64 -o type=docker,dest=image.tar .
