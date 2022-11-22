@@ -23,7 +23,7 @@ build: ["make"]
 # Human readable descriptors for the service. These are used throughout the EmbassyOS user interface, primarily in the marketplace.
 description:
   # This is the first description visible to the user in the marketplace.
-  short: Example service
+  short: 
   # This description will display with additional details in the service's individual marketplace page
   long: |
     NoThInG HeRe yet...
