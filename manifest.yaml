@@ -18,7 +18,7 @@ license: mit
 
 wrapper-repo: "https://github.com/PlebeiusGaragicus/plebtools"
 # upstream-repo: "https://github.com/PlebeiusGaragicus/plebtools"
-upstream-repo: 
+upstream-repo: "https://github.com/PlebeiusGaragicus/plebtools"
 support-site: "https://github.com/PlebeiusGaragicus/plebtools/issues"
 
 build: ["make"]
