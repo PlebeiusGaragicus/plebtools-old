@@ -1,23 +1,10 @@
 import datetime
 
-import pywebio
 from pywebio import output
 
-from . import config
-from . import API_coinbase
-from . import API_mempoolspace
-from . import authproxy
+from src.api import mempoolspace
+from src.api import coinbase
 
-@pywebio.config(title=config.APP_TITLE, theme='dark')
-def main_page():
-    output.put_markdown(f"# {config.APP_TITLE}")
-
-    with output.use_scope("menu", clear=True):
-        # when this is used the callback is given the text of the button pressed
-        # output.put_buttons(["Refresh", "or"], onclick=refresh)
-        output.put_button("Refresh", onclick=refresh)
-
-    refresh()
 
 def refresh():
     # clear any results and show a loading message
@@ -25,10 +12,10 @@ def refresh():
         output.put_text("Refreshing...")
 
     # get the data
-    spot = API_coinbase.spot_price()
-    tip = API_mempoolspace.blockcount()
-    gen = API_mempoolspace.blocktime(0)
-    now = API_mempoolspace.blocktime(tip)
+    spot = coinbase.spot_price()
+    tip = mempoolspace.blockcount()
+    gen = mempoolspace.blocktime(0)
+    now = mempoolspace.blocktime(tip)
 
 
     # TODO TODO TODO
@@ -45,9 +32,6 @@ def refresh():
 
     # blocks = rpc_connection.batch_([ [ "getblock", h ] for h in block_hashes ])
     # block_times = [ block["time"] for block in blocks ]
-
-    # print(block_times)
-
 
     # display the data
     with output.use_scope('main', clear=True):
