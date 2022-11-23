@@ -21,7 +21,9 @@ def setup_logging() -> None:
         level=logging.DEBUG if config.DEBUG else logging.INFO,
         #format="%(asctime)s %(levelname)s %(message)s",
         format="%(name)s [%(levelname)s] (%(filename)s @ %(lineno)d) %(message)s",
-        handlers=[logging.FileHandler("debug.log", mode='a'), logging.StreamHandler(sys.stdout)],
+        #handlers=[logging.FileHandler("debug.log", mode='a'), logging.StreamHandler(sys.stdout)],
+        ### TODO CRASHED! PermissionError: [Errno 13] Permission denied: '/debug.log'
+        handlers=[logging.StreamHandler()],
     )
 
     if config.DEBUG:
@@ -46,7 +48,7 @@ if __name__ == "__main__":
     # pywebio.platform.tornado_http.start_server(main_page.main_page, port=config.PORT, debug=config.DEBUG, cdn=False)
     pywebio.platform.tornado_http.start_server(
         main_menu.main_menu,
-        #host="0.0.0.0",
+        host="0.0.0.0",
         auto_open_webbrowser=True,
         # open_webbrowser_tab=True,
         port=config.PORT,
