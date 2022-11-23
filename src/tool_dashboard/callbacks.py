@@ -7,11 +7,12 @@ from src.api import coinbase
 
 from . import config
 
+@output.use_scope('app', clear=True)
 def show_dashboard():
     # clear any results and show a loading message
     # no long user this scope... just the main scope...
     # I am going to TODO switch to using input fields that I can address and change to make the refresh easier/cleaner
-    with output.use_scope('app', clear=True):
+    # with output.use_scope('app', clear=True):
         # output.put_text("Refreshing...")
         output.put_text("Bitcoin price: ${}".format(config.spot))
         output.put_text("Bitcoin block height: {}".format(config.tip))
@@ -37,10 +38,11 @@ def show_dashboard():
     # block_times = [ block["time"] for block in blocks ]
 
 
-
+@output.use_scope('app', clear=True)
 def refresh():
-    with output.use_scope('dashboard', clear=True):
-        output.put_text("...")
+    # with output.use_scope('dashboard', clear=True):
+    #     output.put_text("...")
+    output.put_text("...")
 
     # get the data
     config.spot = coinbase.spot_price()

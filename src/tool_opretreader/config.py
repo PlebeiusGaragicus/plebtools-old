@@ -1,0 +1,1 @@
+APP_TITLE = "OP_RETURN Reader"
