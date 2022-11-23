@@ -6,8 +6,10 @@ from pywebio import output
 
 from . import config
 from . import tool_dashboard
+from . import tool_profitcalcs
 from . import tool_rpccurlhelper
-from . import tool_nopreader
+from . import tool_opretreader
+from . import tool_terminal
 
 def read_candy():
     datadir = "/root/assets/"
@@ -20,27 +22,26 @@ def read_candy():
     except FileNotFoundError:
         logging.error("CANDY FILE NOT FOUND")
 
-    output.put_text("check the logs...")
+    with output.use_scope('app', clear=True):
+        output.put_text("check the logs...")
 
-
-def nothing():
-    output.put_text("nothing happens")
 
 
 @pywebio.config(title=config.APP_TITLE, theme='dark')
 def main_menu():
 
-    with output.use_scope("main", clear=True):
+    output.clear('app')
+    with output.use_scope('main', clear=True):
         if config.DEBUG:
-            output.put_text(f"DEBUG: {config.DEBUG}"),
+            output.put_text(f"DEBUG: {config.DEBUG}")
 
         output.put_markdown(f"# {config.APP_TITLE}")
 
-        # when this is used the callback is given the text of the button pressed
-        # output.put_buttons(["Refresh", "or"], onclick=refresh)
+        # here we pass this function as a callback to the buttons so that the back buttons work without an infinite import loop
         output.put_button("Dashboard", onclick=lambda: tool_dashboard.web_interface.main_page(main_menu))
-        output.put_button("NO OP Return Reader", onclick=lambda: tool_nopreader.web_interface.main_page(main_menu))
-        # ... TESTING ...
+        output.put_button("Mining Profits", onclick=lambda: tool_profitcalcs.web_interface.main_page(main_menu))
+        output.put_button("OP_RETURN Reader", onclick=lambda: tool_opretreader.web_interface.main_page(main_menu))
         output.put_button("RPC Curl Formatter", onclick=lambda:tool_rpccurlhelper.web_interface.main_page(main_menu))
-        output.put_button("terminal", onclick=nothing)
+        output.put_button("terminal", onclick=lambda: tool_terminal.web_interface.main_page(main_menu))
+        output.put_markdown("---\ndebugging")
         output.put_button("eat candy", read_candy)
