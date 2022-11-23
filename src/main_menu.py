@@ -22,7 +22,8 @@ def read_candy():
     except FileNotFoundError:
         logging.error("CANDY FILE NOT FOUND")
 
-    output.put_text("check the logs...")
+    with output.use_scope('app', clear=True):
+        output.put_text("check the logs...")
 
 
 

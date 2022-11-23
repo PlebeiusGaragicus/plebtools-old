@@ -49,7 +49,7 @@ if __name__ == "__main__":
     pywebio.platform.tornado_http.start_server(
         main_menu.main_menu,
         host="0.0.0.0",
-        auto_open_webbrowser=True,
+        # auto_open_webbrowser=True, # TODO don't use when debugging... it's annoying!
         # open_webbrowser_tab=True,
         port=config.PORT,
         debug=config.DEBUG,
