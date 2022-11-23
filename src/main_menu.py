@@ -25,9 +25,6 @@ def read_candy():
     output.put_text("check the logs...")
 
 
-def nothing():
-    output.put_text("nothing happens")
-
 
 @pywebio.config(title=config.APP_TITLE, theme='dark')
 def main_menu():
@@ -35,7 +32,7 @@ def main_menu():
     output.clear('app')
     with output.use_scope('main', clear=True):
         if config.DEBUG:
-            output.put_text(f"DEBUG: {config.DEBUG}"),
+            output.put_text(f"DEBUG: {config.DEBUG}")
 
         output.put_markdown(f"# {config.APP_TITLE}")
 
@@ -45,4 +42,5 @@ def main_menu():
         output.put_button("OP_RETURN Reader", onclick=lambda: tool_opretreader.web_interface.main_page(main_menu))
         output.put_button("RPC Curl Formatter", onclick=lambda:tool_rpccurlhelper.web_interface.main_page(main_menu))
         output.put_button("terminal", onclick=lambda: tool_terminal.web_interface.main_page(main_menu))
-        # output.put_button("eat candy", read_candy)
+        output.put_markdown("---\ndebugging")
+        output.put_button("eat candy", read_candy)
