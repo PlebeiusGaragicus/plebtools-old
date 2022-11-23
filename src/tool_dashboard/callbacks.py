@@ -9,7 +9,9 @@ from . import config
 
 def show_dashboard():
     # clear any results and show a loading message
-    with output.use_scope('dashboard', clear=True):
+    # no long user this scope... just the main scope...
+    # I am going to TODO switch to using input fields that I can address and change to make the refresh easier/cleaner
+    with output.use_scope('app', clear=True):
         # output.put_text("Refreshing...")
         output.put_text("Bitcoin price: ${}".format(config.spot))
         output.put_text("Bitcoin block height: {}".format(config.tip))
