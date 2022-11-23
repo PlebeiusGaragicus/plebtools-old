@@ -7,6 +7,7 @@ from .config import *
 
 @output.use_scope('app')
 def generate():
+    """ Reads the pin values and generates the curl command """
 
     username = pin.pin[PIN_USERNAME]
     password = pin.pin[PIN_PASSWORD]
@@ -26,13 +27,67 @@ def generate():
         params=None
         )
 
-    output.put_text(f"{out}")
+    show_command(out)
+    show_saved_commands()
 
-def add_command( cmd: str ):
+
+@output.use_scope('saved_commands', clear=True)
+def show_saved_commands():
+    """ Shows the saved commands in the saved_commands list """
+    logging.debug("show_saved_commands()")
+
+    if len(saved_commands) == 0:
+        # output.put_markdown("---\nNo saved commands")
+        return
+
+    output.put_markdown("Saved commands:")
+    for cmd in saved_commands:
+        output.put_row([
+            output.put_text(cmd),
+            output.put_button("Delete", color='danger', onclick=lambda: delete_command(cmd))
+        ])
+
+@output.use_scope('output', clear=True)
+def show_command( cmd: str ):
+    """ Shows the command in the 'output' scope with a button to save the commmand to table """
     #pin.pin['feescroller'] = f"block: {bdx} --> fee: {block_fee:,}\n" + pin.pin["feescroller"]
-    pass
+    output.put_table([
+        [output.put_text(f"{cmd}")],
+        [output.put_button("Save this command", onclick=lambda: save_command(cmd))]
+    ])
+
+def save_command( cmd: str ):
+    """ Saves the command to the saved_commands list"""
+
+    logging.debug(f"save_command({cmd})")
+    saved_commands.append(cmd)
+
+    show_saved_commands()
+
+    # for c in saved_commands:
+    #     output.put_table([
+    #         [output.put_text(f"{c}")],
+    #         [output.put_button("Delete this command", onclick=lambda: delete_command(c))]
+    #     ])
+
+    # output.put_text(f"Saved commands: {len(saved_commands)}")
+    # for c in saved_commands:
+    #     output.put_text(c)
+
+def delete_command( cmd: str ):
+    """ Deletes the command from the saved_commands list"""
+    logging.debug(f"delete_command({cmd})")
+    saved_commands.remove(cmd)
+
+    show_saved_commands()
+
 
 def use_cookie_callback( opt: str ):
+    """ Callback for the use cookie checkbox
+        This function makes the username input box read only and sets the username to '__cookie__'
+        or, if unchecked, enables the username input box and sets the username to '' (blank)
+    """
+
     logging.debug(f"use_cookie_callback({opt})")
 
     # if pin.pin[PIN_USE_COOKIE]:

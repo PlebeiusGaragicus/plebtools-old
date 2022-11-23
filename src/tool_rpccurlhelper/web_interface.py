@@ -4,7 +4,8 @@ from .config import *
 from .callbacks import *
 
 def cleanup( menu_callback: callable ):
-    output.clear('table')
+    output.clear('output')
+    output.clear('saved_commands')
     menu_callback()
 
 def main_page(menu_callback: callable):
@@ -21,6 +22,10 @@ def main_page(menu_callback: callable):
         output.put_row([
             pin.put_input(name=PIN_USERNAME, label="username", value=""),#, placeholder="username"),
             pin.put_input(name=PIN_PASSWORD, label="password", value="")#, placeholder="password")
+        ])
+        output.put_row([
+            pin.put_input(name=PIN_IPADDRESS, label="ip address", value=DEFAULT_NODE_IP_ADDRESS),
+            pin.put_input(name=PIN_PORT, label="port", value=DEFAULT_NODE_PORT)
         ])
         pin.put_checkbox(name=PIN_USE_COOKIE, options=["Use cookie file"], label="", value=False)
         pin.pin_on_change(PIN_USE_COOKIE, use_cookie_callback)

@@ -12,6 +12,8 @@ DEFAULT_NODE_PORT = '8332'
 PIN_USERNAME = 'username'
 PIN_PASSWORD = 'password'
 PIN_USE_COOKIE = 'use_cookie'
+PIN_IPADDRESS = 'ip_address'
+PIN_PORT = 'port'
 PIN_CMD_SELECT = "cmd_select"
 PIN_GENERATED_CMD = "generated_cmd"
 
@@ -44,5 +46,5 @@ BLOCKCHAIN_RPCS = [
     "verifytxoutproof",
 ]
 
-commands_thus_far = []
+# commands_thus_far = []
 saved_commands = []
