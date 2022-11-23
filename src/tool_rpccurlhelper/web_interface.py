@@ -23,11 +23,11 @@ def main_page(menu_callback: callable):
             pin.put_input(name=PIN_USERNAME, label="username", value=""),#, placeholder="username"),
             pin.put_input(name=PIN_PASSWORD, label="password", value="")#, placeholder="password")
         ])
+        pin.put_checkbox(name=PIN_USE_COOKIE, options=["Use cookie file"], label="", value=False)
         output.put_row([
             pin.put_input(name=PIN_IPADDRESS, label="ip address", value=DEFAULT_NODE_IP_ADDRESS),
             pin.put_input(name=PIN_PORT, label="port", value=DEFAULT_NODE_PORT)
         ])
-        pin.put_checkbox(name=PIN_USE_COOKIE, options=["Use cookie file"], label="", value=False)
         pin.pin_on_change(PIN_USE_COOKIE, use_cookie_callback)
         pin.put_select(PIN_CMD_SELECT, options=BLOCKCHAIN_RPCS, label="RPC Command")
 

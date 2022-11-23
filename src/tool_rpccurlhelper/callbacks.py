@@ -1,5 +1,8 @@
+import os
 import logging
 import json
+
+import pyperclip
 
 from pywebio import output, pin
 
@@ -47,14 +50,50 @@ def show_saved_commands():
             output.put_button("Delete", color='danger', onclick=lambda: delete_command(cmd))
         ])
 
+def copy_to_clipboard( cmd: str ):
+    """ Copies the command to the clipboard """
+    logging.debug(f"copy_to_clipboard({cmd})")
+
+    pyperclip.copy(cmd)
+    output.toast("Command copied to clipboard", color='success')
+
 @output.use_scope('output', clear=True)
 def show_command( cmd: str ):
     """ Shows the command in the 'output' scope with a button to save the commmand to table """
     #pin.pin['feescroller'] = f"block: {bdx} --> fee: {block_fee:,}\n" + pin.pin["feescroller"]
     output.put_table([
-        [output.put_text(f"{cmd}")],
-        [output.put_button("Save this command", onclick=lambda: save_command(cmd))]
+        [output.span(output.put_text(f"{cmd}"), col=3)],
+        [
+            output.put_button("copy", onclick=lambda: copy_to_clipboard(cmd)),
+            output.put_button("save", color='success', onclick=lambda: save_command(cmd)),
+            output.put_button("run", color='info', onclick=lambda: run_command(cmd))
+        ],
     ])
+
+@output.use_scope('command_output', clear=True)
+def run_command( cmd: str ):
+    """ Runs the command in the terminal and displays the output in the 'command_output' scope """
+    logging.debug(f"run_command({cmd})")
+
+    # res = os.popen(cmd).read()
+    res = os.popen(f"{cmd} | jq").read()
+
+    # count the number of lines in res
+    num_lines = len(res.splitlines())
+
+    logging.debug(f"result: {res}")
+
+    # output.put_markdown(
+    #     f"""
+    #     ## Command output
+    #     ```sh
+    #     {res}
+    #     ```
+    #     """)
+    output.put_markdown(f"## Command output")
+    # output.put_code(res, language='sh')
+    pin.put_textarea(name='res', value=res, readonly=True, rows=num_lines, code=True)
+
 
 def save_command( cmd: str ):
     """ Saves the command to the saved_commands list"""
@@ -94,9 +133,11 @@ def use_cookie_callback( opt: str ):
     if opt == ["Use cookie file"]:
         pin.pin[PIN_USERNAME] = '__cookie__'
         pin.pin_update(PIN_USERNAME, readonly=True)
+        pin.pin_update(PIN_PASSWORD, label="cookie file contents")
     else:
         pin.pin_update(PIN_USERNAME, readonly=False)
         pin.pin[PIN_USERNAME] = ''
+        pin.pin_update(PIN_PASSWORD, label="password")
 
 ############################################################
 def format_RPC_call(username: str, password: str, ip_address: str, port: str, method: str, params: list=None) -> str:
