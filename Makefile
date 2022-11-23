@@ -26,6 +26,8 @@ scripts/embassy.js: $(TS_FILES)
 	deno bundle scripts/embassy.ts scripts/embassy.js
 
 image.tar: Dockerfile docker_entrypoint.sh
+	# recursively delete every folder named __pycache__
+	find . -type d -name __pycache__ -exec rm -rf {} +
 	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/arm64 -o type=docker,dest=image.tar .
 
 $(PKG_ID).s9pk: manifest.yaml instructions.md icon.png LICENSE scripts/embassy.js image.tar
