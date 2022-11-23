@@ -1,3 +1,5 @@
+# https://docs.start9.com/latest/developer-docs/specification/manifest
+
 # must be unique amongst all other known packages - underscore is not allowed
 id: plebg-plebtools
 

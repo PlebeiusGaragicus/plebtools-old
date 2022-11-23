@@ -1,3 +1,6 @@
+# https://docs.start9.com/latest/developer-docs/specification/makefile
+# https://makefiletutorial.com
+
 # This will pull variables from manifest.yaml
 PKG_ID := $(shell yq e ".id" manifest.yaml)
 PKG_VERSION := $(shell yq e ".version" manifest.yaml)
