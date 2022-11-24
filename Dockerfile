@@ -4,6 +4,11 @@ FROM python:3.11.0-alpine
 # FROM python:3.8.3
 # FROM python:slim-buster
 
+# https://www.cyberciti.biz/faq/alpine-linux-install-bash-using-apk-command/
+# adds about 4MB to the image
+RUN apk update
+RUN apk add curl jq
+
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 

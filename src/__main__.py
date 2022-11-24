@@ -18,11 +18,12 @@ def setup_logging() -> None:
         config.DEBUG = True
     
     logging.basicConfig(
-        level=logging.DEBUG if config.DEBUG else logging.INFO,
-        #format="%(asctime)s %(levelname)s %(message)s",
+        # level=logging.DEBUG if config.DEBUG else logging.INFO, # TODO put this back once it's done, done
+        level=logging.DEBUG,
         format="%(name)s [%(levelname)s] (%(filename)s @ %(lineno)d) %(message)s",
-        #handlers=[logging.FileHandler("debug.log", mode='a'), logging.StreamHandler(sys.stdout)],
+
         ### TODO CRASHED! PermissionError: [Errno 13] Permission denied: '/debug.log'
+        #handlers=[logging.FileHandler("debug.log", mode='a'), logging.StreamHandler(sys.stdout)],
         handlers=[logging.StreamHandler()],
     )
 

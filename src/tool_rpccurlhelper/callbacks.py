@@ -20,6 +20,13 @@ def generate_command():
         output.toast("Please enter a username and password", color='danger')
         return
 
+    ip_address = pin.pin[PIN_IPADDRESS]
+    port = pin.pin[PIN_PORT]
+
+    if "" in (ip_address, port):
+        output.toast("Please enter an IP address and port", color='danger')
+        return
+
     method = pin.pin[PIN_METHOD_SELECT]
     params = pin.pin['params']
 
@@ -29,8 +36,8 @@ def generate_command():
     return format_RPC_call(
         username=username,
         password=password,
-        ip_address=DEFAULT_NODE_IP_ADDRESS,
-        port=DEFAULT_NODE_PORT,
+        ip_address=ip_address,
+        port=port,
         method=method,
         params=params
         )
