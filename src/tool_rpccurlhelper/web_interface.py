@@ -1,6 +1,6 @@
 from pywebio import output
 
-from .config import *
+from .const import *
 from .callbacks import *
 
 def cleanup( menu_callback: callable ):
@@ -29,9 +29,24 @@ def main_page(menu_callback: callable):
             pin.put_input(name=PIN_PORT, label="port", value=DEFAULT_NODE_PORT)
         ])
         pin.pin_on_change(PIN_USE_COOKIE, use_cookie_callback)
-        pin.put_select(PIN_CMD_SELECT, options=BLOCKCHAIN_RPCS, label="RPC Command")
+        pin.put_select(PIN_METHOD_SELECT, options=BLOCKCHAIN_RPCS, label="RPC Command")
+        pin.pin_on_change(PIN_METHOD_SELECT, onchange=clear_params)
+        pin.put_input(name='params', label="Additional Parameters", help_text="", value="")
 
-        output.put_button("Generate", onclick=generate)
+
+        output.put_row([
+            output.put_button("Format command", color='info', onclick=lambda: add_command( run=False )),
+            output.put_button("Format and run!", color='danger', onclick=lambda: add_command( run=True ))
+        ])
+        output.put_markdown(f"# Command history:")
+
+    # with output.use_scope('history', clear=True):
+        # output.put_markdown(f"# Commands:")
+
+    # with output.use_scope('output', clear=True):
+    #     output.put_markdown(f"# Output:")
+
+        # globals.saved_commands = []
 
         # pin.put_textarea(PIN_GENERATED_CMD, label="Generated RPC Curl commands", readonly=True, value="", rows=5)
         # output.put_table
