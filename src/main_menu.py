@@ -38,10 +38,11 @@ def main_menu():
         output.put_markdown(f"# {config.APP_TITLE}")
 
         # here we pass this function as a callback to the buttons so that the back buttons work without an infinite import loop
-        output.put_button("Dashboard", onclick=lambda: tool_dashboard.web_interface.main_page(main_menu))
-        output.put_button("Mining Profits", onclick=lambda: tool_profitcalcs.web_interface.main_page(main_menu))
-        output.put_button("OP_RETURN Reader", onclick=lambda: tool_opretreader.web_interface.main_page(main_menu))
-        output.put_button("RPC Curl Formatter", onclick=lambda:tool_rpccurlhelper.web_interface.main_page(main_menu))
-        output.put_button("terminal", onclick=lambda: tool_terminal.web_interface.main_page(main_menu))
-        output.put_markdown("---\ndebugging")
-        output.put_button("eat candy", read_candy)
+        output.put_button("Bitcoin Dashboard", onclick=lambda: tool_dashboard.web_interface.main_page(main_menu))
+        output.put_button("Mining Profitability Calculator", onclick=lambda: tool_profitcalcs.web_interface.main_page(main_menu))
+        output.put_button("Mining Treasury Management Simulator", onclick=lambda: output.toast("Coming Soon!"))
+        output.put_button("bitcoin-cli RPC curl Formatter", onclick=lambda:tool_rpccurlhelper.web_interface.main_page(main_menu))
+        # output.put_button("OP_RETURN Reader", onclick=lambda: tool_opretreader.web_interface.main_page(main_menu))
+        # output.put_button("terminal", onclick=lambda: tool_terminal.web_interface.main_page(main_menu))
+        # output.put_markdown("---\ndebugging")
+        # output.put_button("eat candy", read_candy)

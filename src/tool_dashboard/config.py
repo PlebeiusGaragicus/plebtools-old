@@ -1,4 +1,4 @@
-APP_TITLE = 'dashboard'
+APP_TITLE = 'Bitcoin Dashboard'
 
 PIN_BTC_PRICE_NOW = 'btc_price_now'
 PIN_HEIGHT = 'height'
