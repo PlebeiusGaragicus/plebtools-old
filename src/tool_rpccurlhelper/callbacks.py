@@ -4,12 +4,15 @@ import logging
 import json
 from functools import partial
 
-import pyperclip
+# just to get thru debugging
+try:
+    import pyperclip
+except ImportError:
+    pass
 
 from pywebio import output, pin
 
 from .const import *
-from src.popup import popup_OK
 
 def generate_command():
     """ Reads the pin values and generates the curl command """
@@ -134,7 +137,7 @@ def run_command( cmd: str ):
 
         error = res_json.get("error")
     except json.decoder.JSONDecodeError as e:
-        output.toast("Error: Invalid JSON - NO OUTPUT - likely a user auth error", color='danger')
+        # output.toast("Error: Invalid JSON - NO OUTPUT - likely a user auth error", color='danger')
         res_json = None
 
     logging.debug(f"result.returncode: {res.returncode}")
@@ -164,11 +167,9 @@ def use_cookie_callback( opt: str ):
 
     logging.debug(f"use_cookie_callback({opt})")
 
-    # if pin.pin[PIN_USE_COOKIE]:
     if opt == ["Use cookie file"]:
         pin.pin[PIN_USERNAME] = '__cookie__'
         pin.pin_update(PIN_USERNAME, readonly=True)
-        # pin.pin_update(PIN_PASSWORD, label="cookie file contents")
         pin.pin_update(PIN_PASSWORD, label="secret cookie")
     else:
         pin.pin_update(PIN_USERNAME, readonly=False)
@@ -206,5 +207,13 @@ def format_RPC_call(username: str, password: str, ip_address: str, port: str, me
 #         pin.put_input(name='param1', label="Argument #1 - height", help_text="\nType: numeric, required. The height index", value="0")
 
 
+@output.use_scope('help', clear=True)
 def clear_params( throwaway ):
     pin.pin['params'] = ''
+    logging.debug(f"{pin.pin[PIN_METHOD_SELECT]=}")
+    ht = BLOCKCHAIN_RPCS.get( pin.pin[PIN_METHOD_SELECT] )
+
+    output.put_collapse("Description", [
+        output.put_markdown(ht)
+        ], open=False)
+
