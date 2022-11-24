@@ -13,21 +13,21 @@ from .const import *
 def generate_command():
     """ Reads the pin values and generates the curl command """
 
-    username = pin.pin[PIN_USERNAME]
-    password = pin.pin[PIN_PASSWORD]
+    username = str( pin.pin[PIN_USERNAME] )
+    password = str( pin.pin[PIN_PASSWORD] )
 
     if "" in (username, password):
         output.toast("Please enter a username and password", color='danger')
         return
 
-    ip_address = pin.pin[PIN_IPADDRESS]
-    port = pin.pin[PIN_PORT]
+    ip_address = str( pin.pin[PIN_IPADDRESS] )
+    port = str( pin.pin[PIN_PORT] )
 
     if "" in (ip_address, port):
         output.toast("Please enter an IP address and port", color='danger')
         return
 
-    method = pin.pin[PIN_METHOD_SELECT]
+    method = str( pin.pin[PIN_METHOD_SELECT] )
     params = pin.pin['params']
 
     if params == '':
@@ -169,7 +169,7 @@ def format_RPC_call(username: str, password: str, ip_address: str, port: str, me
 def clear_params( throwaway ):
     pin.pin['params'] = ''
     logging.debug(f"{pin.pin[PIN_METHOD_SELECT]=}")
-    ht = BLOCKCHAIN_RPCS.get( pin.pin[PIN_METHOD_SELECT] )
+    ht = BLOCKCHAIN_RPCS.get( str( pin.pin[PIN_METHOD_SELECT] ) )
 
     output.put_collapse("Description", [
         output.put_markdown(ht)
