@@ -1,5 +1,5 @@
 import datetime
-from pywebio import output, pin
+from pywebio import output, pin, config
 
 from src.chainstate import ChainState, GenesisBlock
 from src.api import mempoolspace
@@ -8,23 +8,24 @@ from src.api import coinbase
 from .config import *
 # from .callbacks import *
 
+@config(title=APP_TITLE, theme='dark')
+def main():#menu_callback: callable):
 
-def main_page(menu_callback: callable):
-
-    output.clear('app')
+    # output.clear('app')
     with output.use_scope('main', clear=True):
-        output.put_button("<<- Main Menu", color='danger', onclick=menu_callback)
+        # output.put_button("<<- Main Menu", color='danger', onclick=menu_callback)
         output.put_markdown(f"# {APP_TITLE}")
 
+    with output.use_scope('refresh', clear=True):
         output.put_button("Refresh", onclick=refresh)
 
-    show_dashboard()
+    show_dashboard( GenesisBlock() )
     refresh()
 
 
 
 @output.use_scope('app', clear=True)
-def show_dashboard(cs: ChainState = None):
+def show_dashboard(cs: ChainState ):
     if cs is None:
         cs = GenesisBlock()
 
@@ -52,10 +53,16 @@ def refresh():
 
     cs = ChainState()
 
-    with output.put_loading(color='success', scope='app', position=output.OutputPosition.TOP):
+    # hide refresh button while we're loading
+    output.clear_scope('refresh')
+
+    with output.put_loading(color='success', scope='refresh', position=output.OutputPosition.TOP):
         cs.spot_price = coinbase.spot_price()
         cs.block_height = mempoolspace.blockcount()
         cs.block_time = mempoolspace.blocktime(cs.block_height)
+
+    # show refresh button once loading is done
+    output.put_button("Refresh", onclick=refresh, scope='refresh')
 
     show_dashboard( cs )
 

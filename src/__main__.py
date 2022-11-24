@@ -5,10 +5,23 @@ import os
 import logging
 import dotenv
 
+from flask import Flask, render_template
 import pywebio
 
 from . import config
-from . import main_menu
+from . import tool_dashboard
+
+app = Flask(__name__)
+# TODO tidy up
+# app = Flask(__name__,
+#             static_url_path='', 
+#             static_folder='web/static',
+#             template_folder='web/templates')
+
+@app.route("/")
+def index():
+    return render_template("index.html", title=config.APP_TITLE)
+
 
 def setup_logging() -> None:
     # TODO - how to have multiple env files...? one for debug?  Pass in the env file as a command line arg?
@@ -38,20 +51,22 @@ def setup_logging() -> None:
     logging.debug("arguments: {}".format(sys.argv))
 
 
-    logging.warning("hello... is this going to be in the docker logs?")
-
-
 
 if __name__ == "__main__":
     setup_logging()
 
-    # https://pywebio.readthedocs.io/en/latest/platform.html?highlight=start_thread#pywebio.platform.tornado_http.start_server
-    # pywebio.platform.tornado_http.start_server(main_page.main_page, port=config.PORT, debug=config.DEBUG, cdn=False)
-    pywebio.platform.tornado_http.start_server(
-        main_menu.main_menu,
-        host="0.0.0.0",
-        # auto_open_webbrowser=True, # TODO don't use when debugging... it's annoying!
-        # open_webbrowser_tab=True,
-        port=config.PORT,
-        debug=config.DEBUG,
-        cdn=False)
+    app.add_url_rule('/dashboard', 'webio_view', pywebio.platform.flask.webio_view( tool_dashboard.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+
+    app.run(host='0.0.0.0', port=config.PORT, debug=config.DEBUG)
+
+    # OLD WAY OF DOING THINGS
+    # # https://pywebio.readthedocs.io/en/latest/platform.html?highlight=start_thread#pywebio.platform.tornado_http.start_server
+    # # pywebio.platform.tornado_http.start_server(main_page.main_page, port=config.PORT, debug=config.DEBUG, cdn=False)
+    # pywebio.platform.tornado_http.start_server(
+    #     main_menu.main_menu,
+    #     host="0.0.0.0",
+    #     # auto_open_webbrowser=True, # TODO don't use when debugging... it's annoying!
+    #     # open_webbrowser_tab=True,
+    #     port=config.PORT,
+    #     debug=config.DEBUG,
+    #     cdn=False)
