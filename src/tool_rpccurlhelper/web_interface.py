@@ -5,7 +5,8 @@ from .callbacks import *
 
 def cleanup( menu_callback: callable ):
     output.clear('output')
-    output.clear('saved_commands')
+    output.clear('history')
+    output.clear('help')
     menu_callback()
 
 def main_page(menu_callback: callable):
@@ -15,6 +16,7 @@ def main_page(menu_callback: callable):
         output.put_button("<<- Main Menu", color='danger', onclick=lambda: cleanup(menu_callback))
         output.put_markdown(f"# {APP_TITLE}")
         # doing it this way will open the link in a new tab
+        # output.put_link() # TODO use this function instead...
         output.put_html(f"""Refer to the official <a href="https://developer.bitcoin.org/reference/rpc/" target="_blank">RPC API Reference</a> for more information""")
         output.put_markdown(TOP_TEXT)
         output.put_markdown("---")
@@ -41,15 +43,3 @@ def main_page(menu_callback: callable):
             output.put_button("Format and run!", color='danger', onclick=lambda: add_command( run=True ))
         ])
         output.put_markdown(f"# Command history:")
-
-    # with output.use_scope('history', clear=True):
-        # output.put_markdown(f"# Commands:")
-
-    # with output.use_scope('output', clear=True):
-    #     output.put_markdown(f"# Output:")
-
-        # globals.saved_commands = []
-
-        # pin.put_textarea(PIN_GENERATED_CMD, label="Generated RPC Curl commands", readonly=True, value="", rows=5)
-        # output.put_table
-        # pin.put_actions()

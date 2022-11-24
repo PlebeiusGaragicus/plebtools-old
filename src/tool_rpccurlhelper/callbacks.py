@@ -4,11 +4,7 @@ import logging
 import json
 from functools import partial
 
-# just to get thru debugging
-try:
-    import pyperclip
-except ImportError:
-    pass
+import pyperclip
 
 from pywebio import output, pin
 
@@ -40,42 +36,6 @@ def generate_command():
         )
 
 
-# # @output.use_scope('commands', clear=True)
-# def generate_and_add_command():
-
-#     # whole = {
-#     #     "command": cmd,
-#     #     "formatted": out
-#     # }
-
-#     add_command( command )
-
-# def generate_and_run_command():
-#     generate_command()
-
-#     run_command( cmd )
-
-# def add_command( cmd: str ):
-#     """ Saves the command to the saved_commands list"""
-#     logging.debug(f"save_command({cmd})")
-
-#     # inspired by:
-#     # pin.pin['feescroller'] = f"block: {bdx} --> fee: {block_fee:,}\n" + pin.pin["feescroller"]
-
-#     # if globals.saved_commands == []:
-#     #     globals.saved_commands = [cmd]
-#     # else:
-#     #     globals.saved_commands = [cmd].append(globals.saved_commands)
-
-#     globals.saved_commands.append(cmd)
-
-#     logging.debug(f"globals.saved_commands:")
-#     for i in range(0, len(globals.saved_commands)):
-#         logging.debug(f"globals.saved_commands[{i}]: {globals.saved_commands[i]}")
-
-
-@output.use_scope('history')
-# def add_command( command: str, run: bool=False ):
 def add_command( run: bool=False ):
     """ Displays the command on a table row with buttons to the TOP of 'history' scope """
 
@@ -89,22 +49,24 @@ def add_command( run: bool=False ):
     # convert the current time to string
     timenow_str = datetime.datetime.now().strftime("%H%M%S%f")
 
-    output.put_table([
-        [
-            output.span(pin.pin[PIN_METHOD_SELECT], col=2)
-            # output.span(method, col=2),
-        ],
-        [
-            output.span(pin.put_textarea(name=timenow_str, value=f"{command}", readonly=True, rows=5, code=True) ),
-            # pin.put_textarea(name=timenow_str, value=f"{command}", readonly=True, rows=5, code=True),
-            # output.put_button("run", color='info', onclick=lambda: run_command(globals.saved_commands[i])),
-            # output.put_button("run", color='info', onclick=partial(run_command, cmd=globals.saved_commands[i])),
-            output.put_button("run", color='info', onclick=partial(run_command, cmd=command)),
-            # output.put_button("copy", onclick=lambda: copy_to_clipboard(globals.saved_commands[i]))
-            output.put_button("copy", onclick=lambda: pyperclip.copy(command))
-            # output.put_button("delete", color='danger', onclick=lambda: delete_command(cmd_index=i))
-        ],
-    ], position=output.OutputPosition.TOP)
+    with output.use_scope('history'):
+        output.put_table([
+            [
+                output.span(pin.pin[PIN_METHOD_SELECT], col=2)
+            ],
+            [
+                output.span(pin.put_textarea(name=timenow_str, value=f"{command}", readonly=True, rows=5, code=True) ),
+                # pin.put_textarea(name=timenow_str, value=f"{command}", readonly=True, rows=5, code=True),
+                # output.put_button("run", color='info', onclick=lambda: run_command(globals.saved_commands[i])),
+                # output.put_button("run", color='info', onclick=partial(run_command, cmd=globals.saved_commands[i])),
+                output.put_button("run", color='info', onclick=partial(run_command, cmd=command)),
+                # output.put_button("copy", onclick=lambda: copy_to_clipboard(globals.saved_commands[i]))
+                output.put_button("copy", onclick=lambda: pyperclip.copy(command))
+                # output.put_button("delete", color='danger', onclick=lambda: delete_command(cmd_index=i))
+            ],
+        ], position=output.OutputPosition.BOTTOM)
+
+    output.scroll_to(scope='history', position=output.Position.BOTTOM)
 
     if run:
         run_command(command)
@@ -119,7 +81,6 @@ def add_command( run: bool=False ):
 @output.use_scope('output', clear=True)
 def run_command( cmd: str ):
     """ Runs the command in the terminal and displays the output in the 'output' scope """
-    # logging.debug(f"run_command():\n{cmd}\n")
 
     with output.put_loading(color='success', scope='command_output', position=output.OutputPosition.TOP):
         res = subprocess.run(f"{cmd} | jq", shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -130,12 +91,11 @@ def run_command( cmd: str ):
         output.put_text(f"ERROR:\n{res.stderr}\nCheck the username and password")
         return
 
-    # parse the json output
-    error = None
+    # error = None
     try:
         res_json = json.loads(res.stdout)
 
-        error = res_json.get("error")
+        # error = res_json.get("error")
     except json.decoder.JSONDecodeError as e:
         # output.toast("Error: Invalid JSON - NO OUTPUT - likely a user auth error", color='danger')
         res_json = None
@@ -184,28 +144,19 @@ def format_RPC_call(username: str, password: str, ip_address: str, port: str, me
 
     data_binary = {}
     data_binary['jsonrpc'] = '1.0'
-    data_binary['id'] = 'plebtools' # TODO turn this into an advanced option
+    data_binary['id'] = 'plebtools' # TODO turn this into an advanced option?
     data_binary['method'] = f"{method}"
     if params != None:
         params = params.split(' ')
+        # if the param is a number, type-cast it to int to prevent double quotes from surrounding it
+        # else, it's a string (a block hash, for example) and curl needs double quotes around it
         data_binary['params'] = [ int(p) if p.isdigit() == True else p for p in params ]
     else:
         data_binary['params'] = []
 
-    # true if string is a number
-    # is_number = lambda s: s.replace('.', '', 1).isdigit()
-
     everything = "curl -s --user " + user_string + " --data-binary " + f"'{json.dumps(data_binary)}'" + " -H 'content-type: text/plain;' " + f"http://{ip_address}:{port}/"
     logging.debug(f"_format_RPC_call() returning: \n{everything}")
     return everything
-
-# @output.use_scope('params', clear=True)
-# def method_select_callback( selected_method ):
-#     output.put_text("additional params")
-
-#     if selected_method == "getblockhash":
-#         pin.put_input(name='param1', label="Argument #1 - height", help_text="\nType: numeric, required. The height index", value="0")
-
 
 @output.use_scope('help', clear=True)
 def clear_params( throwaway ):
@@ -216,4 +167,3 @@ def clear_params( throwaway ):
     output.put_collapse("Description", [
         output.put_markdown(ht)
         ], open=False)
-

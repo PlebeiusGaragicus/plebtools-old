@@ -1,4 +1,4 @@
-APP_TITLE = "Bitcoin RPC Curl Helper"
+APP_TITLE = "bitcoin-cli RPC curl Formatter"
 
 TOP_TEXT = """
 """
