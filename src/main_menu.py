@@ -6,9 +6,9 @@ from pywebio import output
 
 from . import config
 from . import tool_dashboard
-from . import tool_profitcalcs
+from . import tool_miningcalcs
 from . import tool_rpccurlhelper
-from . import tool_opretreader
+from . import tool_opreturn
 from . import tool_terminal
 
 def read_candy():
@@ -39,7 +39,7 @@ def main_menu():
 
         # here we pass this function as a callback to the buttons so that the back buttons work without an infinite import loop
         output.put_button("Bitcoin Dashboard", onclick=lambda: tool_dashboard.web_interface.main_page(main_menu))
-        output.put_button("Mining Profitability Calculator", onclick=lambda: tool_profitcalcs.web_interface.main_page(main_menu))
+        output.put_button("Mining Profitability Calculator", onclick=lambda: tool_miningcalcs.web_interface.main_page(main_menu))
         output.put_button("Mining Treasury Management Simulator", onclick=lambda: output.toast("Coming Soon!"))
         output.put_button("bitcoin-cli RPC curl Formatter", onclick=lambda:tool_rpccurlhelper.web_interface.main_page(main_menu))
         # output.put_button("OP_RETURN Reader", onclick=lambda: tool_opretreader.web_interface.main_page(main_menu))

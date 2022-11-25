@@ -2,10 +2,31 @@
 
 {% block content %}
 
-<h1>Welcome to PlebTools</h1>
+<!-- <h1 class="text-center" style="color: rgb(193, 173, 173);">Welcome to PlebTools</h1> -->
 
-<div class="container" style="display: flex;">
-  <div class="card" style="width: 18rem; flex-grow: 1;">
+<style>
+  body {
+    background-color: #140f2a;
+  }
+  .row {
+    margin-left: 20px;
+    margin-right: 20px;
+    display: flex;
+    color: rgb(193, 173, 173);
+    background-color: #231855;
+  }
+  .card {
+    background-color: #231855;
+    width: 18rem;
+    flex-grow: 1;
+  }
+</style>
+
+
+
+
+<div class="row">
+  <div class="card">
     <img src="/static/bc.jpg" class="card-img-top">
     <div class="card-body">
       <h5 class="card-title">Dashboard</h5>
@@ -14,7 +35,7 @@
     </div>
   </div>
   
-  <div class="card" style="width: 18rem; flex-grow: 1;">
+  <div class="card"">
     <img src="/static/curlformatter.png" class="card-img-top">
     <div class="card-body">
       <h5 class="card-title">bitcoind RPC curl formatter</h5>
@@ -23,23 +44,24 @@
     </div>
   </div>
 
-  <div class="card" style="width: 18rem; flex-grow: 1;">
+  <div class="card"">
     <img src="/static/profitcalcs.png" class="card-img-top">
     <div class="card-body">
       <h5 class="card-title">Mining Profit Calcs</h5>
       <p class="card-text">This tool helps you BLAH BLAH BLAH BLHABLHAB LH</p>
-      <a href="/profit_calcs" class="btn btn-primary">Launch app</a>
+      <a href="/mining_calcs" class="btn btn-primary">Launch app</a>
     </div>
   </div>
 
-  <div class="card" style="width: 18rem; flex-grow: 1;">
+  <div class="card"">
     <img src="/static/opreturn.png" class="card-img-top">
     <div class="card-body">
-      <h5 class="card-title">OP_RETURN box</h5>
+      <h5 class="card-title">OP_RETURN Reader</h5>
       <p class="card-text">This tool helps you read the blockchain!!</p>
-      <a href="/op_return" class="btn btn-primary">Launch app</a>
+      <a href="/opreturn" class="btn btn-primary">Launch app</a>
     </div>
   </div>
 </div>
+
 
 {% endblock %}
