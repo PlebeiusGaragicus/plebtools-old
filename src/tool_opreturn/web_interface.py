@@ -5,7 +5,7 @@ import json
 import dotenv
 from pywebio import output, pin, config
 
-from src.api.authproxy import AuthServiceProxy
+from src.api.authproxy import AuthServiceProxy, JSONRPCException
 
 from .config import *
 from .callbacks import *
@@ -81,7 +81,7 @@ def show_opreturns():
     height = pin.pin['height']
 
     if height is None or height is '':
-        output.toast("enter block number to read OP_RETURN data")
+        output.toast("Enter a block height to read OP_RETURN data")
         return
         # height = tip
         # pin.pin['height'] = height
@@ -91,7 +91,11 @@ def show_opreturns():
         return
 
     hash = rpc_connection.getblockhash( height )
-    block = rpc_connection.getblock( hash, 2 ) # call with verbosity 2 in order to get tx details
+    try:
+        block = rpc_connection.getblock( hash, 2 ) # call with verbosity 2 in order to get tx details
+    except JSONRPCException as e:
+        output.toast(f"ERROR: {e}", color='error', duration=10)
+        return
     block = json.loads( json.dumps( block , cls=CustomJsonEncoder) )
 
     with output.put_loading(color='info'):
