@@ -6,8 +6,9 @@ FROM python:3.11.0-alpine
 
 # https://www.cyberciti.biz/faq/alpine-linux-install-bash-using-apk-command/
 # adds about 4MB to the image
-RUN apk update
-RUN apk add curl jq
+# WE DON'T NEED THESE ANYMORE BECAUSE WE'RE USING PYTHON:3.11.0-ALPINE AND PYTHON IS THE SHIT
+# RUN apk update
+# RUN apk add curl jq
 
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt

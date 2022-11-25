@@ -91,6 +91,9 @@ def run_command( cmd: str ):
 
     with output.put_loading(color='success', scope='command_output', position=output.OutputPosition.TOP):
         res = subprocess.run(f"{cmd} | jq", shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # print(json.dumps(parsed, indent=4))
+        # https://stackoverflow.com/questions/12943819/how-to-prettyprint-a-json-file
+        # TODO - DON'T BE A NOOB AND PLEASE WRITE BETTER PYTHON CODEZ...!! <3 <3
 
     output.put_markdown(f"# Output:")
 

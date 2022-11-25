@@ -8,7 +8,7 @@ from .callbacks import *
 def main():
     with output.use_scope('main', clear=True):
         output.put_markdown(f"# {APP_TITLE}")
-        output.put_button('Update All Workers', callback=update_all_workers)
+        output.put_button('Update All Workers', onclick=update_all_workers)
 
 
     logging.debug(f"{os.getenv('ADAFRUIT_USER_ENV')=}")

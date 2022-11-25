@@ -2,6 +2,8 @@ import os
 import json
 import logging
 
+import requests
+
 """
     TODO - document that dotenv.load_env() needs to be called if no credentials will be given during init()
 """
@@ -24,10 +26,15 @@ class BraiinsPoolUser:
 
 def query_worker_metric(braiins_user: BraiinsPoolUser, poolname_workername: str, metric: str):
     # run the curl command
-    ret = os.popen(f"curl -s 'https://pool.braiins.com/accounts/workers/json/btc/' -H \"SlushPool-Auth-Token: {braiins_user.api_token}\"").read()
+    # ret = os.popen(f"curl -s 'https://pool.braiins.com/accounts/workers/json/btc/' -H \"SlushPool-Auth-Token: {braiins_user.api_token}\"").read()
+    r = requests.get(f"https://pool.braiins.com/accounts/workers/json/btc/", headers={"SlushPool-Auth-Token": braiins_user.api_token})
+
+    logging.debug(f"{r.status_code=}")
+    if r.status_code != 200:
+        raise Exception(f"query_worker_metric() failed with status code {r.status_code}")
 
     # make it a JSON object
-    ret = json.loads(ret)
+    ret = json.loads(r.content)
     logging.debug(ret)
 
     try:
