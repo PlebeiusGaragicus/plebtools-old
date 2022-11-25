@@ -10,8 +10,11 @@ from src.api.authproxy import AuthServiceProxy, JSONRPCException
 from .config import *
 from .callbacks import *
 
+tip = 0
 
 def prev():
+    if pin.pin['height'] == 0:
+        return
     try:
         pin.pin['height'] -= 1
     except TypeError:
@@ -27,6 +30,10 @@ def next():
         return
     show_opreturns()
 
+def use_latest():
+    global tip
+    pin.pin['height'] = tip
+    show_opreturns()
 
 @config(title=APP_TITLE, theme='dark')
 def main():
@@ -36,20 +43,21 @@ def main():
     with output.use_scope('main', clear=True):
         output.put_markdown(f"# {APP_TITLE}")
 
+        output.put_row(
+            [
+                pin.put_input(name='height',label='',type='number',value='', placeholder='Enter Block Height'),
+                output.put_button('Get OP_RETURN data', onclick=show_opreturns)
+            ])
         output.put_table([
             [
-                output.put_column(
-                    [
-                        pin.put_input(name='height',label='',type='number',value='', placeholder='Enter Block Height'),
-                        output.put_button('Get OP_RETURN data', onclick=show_opreturns)
-                    ])
-            ],
-            [
-                output.put_row([
-                    output.put_button('Prev', disabled=pin.pin['height'] == 0, onclick=prev), output.put_button('Next', onclick=next)
-                ])
+                    output.put_button('Prev', disabled=pin.pin['height'] == 0, onclick=prev),
+                    output.put_button("Use latest", onclick=use_latest),
+                    output.put_button('Next', onclick=next)
             ]
         ])
+        output.put_collapse(title='Encoding options', content=[
+            pin.put_checkbox('encoding', options=["utf-8","ascii"], value=["utf-8","ascii"], inline=True)
+        ], open=False)
 
         show_opreturns()
 
@@ -61,9 +69,13 @@ class CustomJsonEncoder(json.JSONEncoder):
             return float(obj)
         return super(CustomJsonEncoder, self).default(obj)
 
-@output.use_scope('opreturns', clear=True)
 def show_opreturns():
+    output.clear('opreturns')
+    with output.put_loading(color='primary'):#, scope='main', position=output.OutputPosition.BOTTOM):
+        do_work()
 
+@output.use_scope('opreturns')
+def do_work():
     # user = os.getenv('RPC_USER')
     user = '__cookie__'
     # pswd = os.getenv('RPC_PASS')
@@ -76,7 +88,9 @@ def show_opreturns():
     rpc_connection = AuthServiceProxy(rpc_url)
     logging.debug(f"{rpc_url=}")
 
+    global tip
     tip = rpc_connection.getblockcount()
+    # pin.pin_update(name="use_latest", value=tip)
 
     height = pin.pin['height']
 
@@ -98,48 +112,43 @@ def show_opreturns():
         return
     block = json.loads( json.dumps( block , cls=CustomJsonEncoder) )
 
-    with output.put_loading(color='info'):
-        if "tx" not in block:
-            output.put_text(f"Block {height} has no transactions")
-            return
+    if "tx" not in block:
+        output.put_text(f"Block {height} has no transactions")
+        return
 
-        for txidx, tx in enumerate(block['tx']):
-            for voutidx, vout in enumerate(tx['vout']): # THESE ARE THE UTXOs
-                if 'scriptPubKey' in vout:
-                    scriptPubKey = vout['scriptPubKey']
-                    if "asm" in scriptPubKey:
-                        asm = scriptPubKey["asm"]
-                        if "OP_RETURN" in asm:
-                            ophex = asm.replace("OP_RETURN ", "")
-                            # require even number of characters (two hex digits per byte)
-                            if len(ophex) % 2 == 1:
-                                continue
-                            # encodinglist = ["utf-8","gb18030","euc-kr","cp1253","utf-32","utf-16","euc-kr","cp1253","cp1252","iso8859-16","ascii","latin-1","iso8859-1"]
-                            encodinglist = ["utf-8","ascii"]
-                            hasError = True
+    for txidx, tx in enumerate(block['tx']):
+        for voutidx, vout in enumerate(tx['vout']): # THESE ARE THE UTXOs
+            if 'scriptPubKey' in vout:
+                scriptPubKey = vout['scriptPubKey']
+                if "asm" in scriptPubKey:
+                    asm = scriptPubKey["asm"]
+                    if "OP_RETURN" in asm:
+                        ophex = asm.replace("OP_RETURN ", "")
+                        # require even number of characters (two hex digits per byte)
+                        if len(ophex) % 2 == 1:
+                            continue
+                        # encodinglist = ["utf-8","gb18030","euc-kr","cp1253","utf-32","utf-16","euc-kr","cp1253","cp1252","iso8859-16","ascii","latin-1","iso8859-1"]
+                        encodinglist = ["utf-8","ascii"]
+                        hasError = True
+                        try:
+                            opbytes = bytes.fromhex(ophex)
+                        except Exception as e:
+                            logging.error(f"error handling ophex '{ophex}' : error: {e}")
+                        for encoding in encodinglist:
+                            if hasError == False:
+                                break
                             try:
-                                opbytes = bytes.fromhex(ophex)
+                                optext = opbytes.decode(encoding)
+                                hasError = False
+                                logging.debug(optext)
+                                output.put_markdown(f"# OP_RETURN:")
+                                output.put_markdown(f"### {optext}")
+                                output.put_collapse(title="details", content=[
+                                    output.put_markdown(f"## Encoding used: {encoding}"),
+                                    output.put_markdown(f"```Transaction index [{txidx}]``` \n ```vout index [{voutidx}]```"),
+                                    output.put_markdown(f"## txid: \n {tx['txid']}"),
+                                    output.put_markdown(f"## Raw transaction JSON: \n {tx}")
+                                ])
                             except Exception as e:
-                                logging.error(f"error handling ophex '{ophex}' : error: {e}")
-                            for encoding in encodinglist:
-                                if hasError == False:
-                                    break
-                                try:
-                                    optext = opbytes.decode(encoding)
-                                    # print(f"successfully converted with encoding {encoding}: {optext}")
-                                    hasError = False
-                                    logging.debug(optext)
-                                    output.put_markdown(f"# OP_RETURN:")
-                                    output.put_markdown(f"### {optext}")
-                                    # a = bytes(tx[txidx].vout[voutidx].scriptPubKey.hex)
-                                    output.put_collapse(title="details", content=[
-                                        output.put_markdown(f"## Encoding used: {encoding}"),
-                                        output.put_markdown(f"```Transaction index [{txidx}]``` \n ```vout index [{voutidx}]```"),
-                                        output.put_markdown(f"## txid: \n {tx['txid']}"),
-                                        # output.put_markdown(f"## hexidecimal: \n {str(tx['hex'])}"),
-                                        output.put_markdown(f"## Raw transaction JSON: \n {tx}")
-                                    ])
-                                except Exception as e:
-                                    # print(f"error converting hex to text with encoding {encoding} for tx[{txidx}].vout[{voutidx}]: {e}")
-                                    pass
-        output.put_markdown(f"---")
+                                pass
+    output.put_markdown(f"---")
