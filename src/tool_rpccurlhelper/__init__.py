@@ -1,1 +1,1 @@
-from . import web_interface
+from .web_interface import main

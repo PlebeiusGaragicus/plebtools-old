@@ -1,19 +1,19 @@
-from pywebio import output
+from pywebio import output, config
 
 from .const import *
 from .callbacks import *
 
-def cleanup( menu_callback: callable ):
-    output.clear('output')
-    output.clear('history')
-    output.clear('help')
-    menu_callback()
+# def cleanup( menu_callback: callable ):
+#     output.clear('output')
+#     output.clear('history')
+#     output.clear('help')
+#     menu_callback()
 
-def main_page(menu_callback: callable):
-
-    output.clear('app')
+@config(title=APP_TITLE, theme='dark')
+def main():
+    # output.clear('app')
     with output.use_scope('main', clear=True):
-        output.put_button("<<- Main Menu", color='danger', onclick=lambda: cleanup(menu_callback))
+        # output.put_button("<<- Main Menu", color='danger', onclick=lambda: cleanup(menu_callback))
         output.put_markdown(f"# {APP_TITLE}")
         # doing it this way will open the link in a new tab
         # output.put_link() # TODO use this function instead...

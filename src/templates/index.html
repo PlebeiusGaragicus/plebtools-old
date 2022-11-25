@@ -4,13 +4,42 @@
 
 <h1>Welcome to PlebTools</h1>
 
-<div class="card" style="width: 18rem;">
+<div class="container" style="display: flex;">
+  <div class="card" style="width: 18rem; flex-grow: 1;">
     <img src="/static/bc.jpg" class="card-img-top">
     <div class="card-body">
       <h5 class="card-title">Dashboard</h5>
       <p class="card-text">This is how it all started - late one night in the garage.  Stay up-to-date with the blockchain with this block clock!</p>
-      <a href="/dashboard" class="btn btn-primary">Open Dashboard</a>
+      <a href="/dashboard" class="btn btn-primary">Launch app</a>
     </div>
   </div>
+  
+  <div class="card" style="width: 18rem; flex-grow: 1;">
+    <img src="/static/curlformatter.png" class="card-img-top">
+    <div class="card-body">
+      <h5 class="card-title">bitcoind RPC curl formatter</h5>
+      <p class="card-text">This tool helps your properly format a curl command for bitcoind.</p>
+      <a href="/curl_formatter" class="btn btn-primary">Launch app</a>
+    </div>
+  </div>
+
+  <div class="card" style="width: 18rem; flex-grow: 1;">
+    <img src="/static/profitcalcs.png" class="card-img-top">
+    <div class="card-body">
+      <h5 class="card-title">Mining Profit Calcs</h5>
+      <p class="card-text">This tool helps you BLAH BLAH BLAH BLHABLHAB LH</p>
+      <a href="/profit_calcs" class="btn btn-primary">Launch app</a>
+    </div>
+  </div>
+
+  <div class="card" style="width: 18rem; flex-grow: 1;">
+    <img src="/static/opreturn.png" class="card-img-top">
+    <div class="card-body">
+      <h5 class="card-title">OP_RETURN box</h5>
+      <p class="card-text">This tool helps you read the blockchain!!</p>
+      <a href="/op_return" class="btn btn-primary">Launch app</a>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

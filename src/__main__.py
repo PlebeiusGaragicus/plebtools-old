@@ -10,6 +10,7 @@ import pywebio
 
 from . import config
 from . import tool_dashboard
+from . import tool_rpccurlhelper
 
 app = Flask(__name__)
 # TODO tidy up
@@ -55,7 +56,8 @@ def setup_logging() -> None:
 if __name__ == "__main__":
     setup_logging()
 
-    app.add_url_rule('/dashboard', 'webio_view', pywebio.platform.flask.webio_view( tool_dashboard.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    app.add_url_rule('/dashboard', 'dashboard', pywebio.platform.flask.webio_view( tool_dashboard.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    app.add_url_rule('/curl_formatter', 'curl_formatter', pywebio.platform.flask.webio_view( tool_rpccurlhelper.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
 
     app.run(host='0.0.0.0', port=config.PORT, debug=config.DEBUG)
 
