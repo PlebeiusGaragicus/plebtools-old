@@ -83,22 +83,23 @@ def do_work():
     host = os.getenv('RPC_HOST')
     port = os.getenv('RPC_PORT')
 
-    # rpc_connection = authproxy.AuthServiceProxy("http://%s:%s@127.0.0.1:3005"%(rpc_user, rpc_password))
     rpc_url = f"http://{user}:{pswd}@{host}:{port}"
     rpc_connection = AuthServiceProxy(rpc_url)
     logging.debug(f"{rpc_url=}")
 
     global tip
-    tip = rpc_connection.getblockcount()
-    # pin.pin_update(name="use_latest", value=tip)
+    try:
+        tip = rpc_connection.getblockcount()
+    except JSONRPCException as e:
+        output.toast(f"ERROR: {e}", color='error', duration=10)
+        output.toast(f"Check your RPC connection settings", color='warn', duration=10)
+        return
 
     height = pin.pin['height']
 
     if height is None or height is '':
         output.toast("Enter a block height to read OP_RETURN data")
         return
-        # height = tip
-        # pin.pin['height'] = height
 
     if height > tip:
         output.toast(f"Block height {height} is higher than the current tip {tip}", position='top', duration=3)

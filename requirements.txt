@@ -5,3 +5,6 @@ pyperclip
 
 flask
 pywebio
+
+twilio
+adafruit-io

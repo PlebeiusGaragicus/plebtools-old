@@ -9,16 +9,19 @@
     background-color: #140f2a;
   }
   .row {
+    display: flex;
+    color: rgb(213, 191, 191);
     margin-left: 20px;
     margin-right: 20px;
-    display: flex;
-    color: rgb(193, 173, 173);
-    background-color: #231855;
   }
   .card {
+    flex-grow: row wrap;
     background-color: #231855;
-    width: 18rem;
-    flex-grow: 1;
+    width: 20rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
 </style>
 
@@ -29,36 +32,47 @@
   <div class="card">
     <img src="/static/bc.jpg" class="card-img-top">
     <div class="card-body">
-      <h5 class="card-title">Dashboard</h5>
-      <p class="card-text">This is how it all started - late one night in the garage.  Stay up-to-date with the blockchain with this block clock!</p>
-      <a href="/dashboard" class="btn btn-primary">Launch app</a>
-    </div>
-  </div>
-  
-  <div class="card"">
-    <img src="/static/curlformatter.png" class="card-img-top">
-    <div class="card-body">
-      <h5 class="card-title">bitcoind RPC curl formatter</h5>
-      <p class="card-text">This tool helps your properly format a curl command for bitcoind.</p>
-      <a href="/curl_formatter" class="btn btn-primary">Launch app</a>
+      <!-- <h5 class="card-title">Dashboard</h5> -->
+      <!-- <p class="card-text">This is how it all started - late one night in the garage.  Stay up-to-date with the blockchain with this block clock!</p> -->
+      <!-- <a href="/dashboard" class="btn btn-primary">Launch app</a> -->
+      <a href="/dashboard" class="btn btn-primary">Block Clock</a>
     </div>
   </div>
 
   <div class="card"">
-    <img src="/static/profitcalcs.png" class="card-img-top">
+    <img src="/static/curlformatter.png" class="card-img-top">
     <div class="card-body">
-      <h5 class="card-title">Mining Profit Calcs</h5>
-      <p class="card-text">This tool helps you BLAH BLAH BLAH BLHABLHAB LH</p>
-      <a href="/mining_calcs" class="btn btn-primary">Launch app</a>
+      <!-- <h5 class="card-title">bitcoind RPC curl formatter</h5> -->
+      <!-- <p class="card-text">This tool helps your properly format a curl command for bitcoind.</p> -->
+      <a href="/curl_formatter" class="btn btn-primary">bitcoind RPC curl formatter</a>
+    </div>
+  </div>
+
+  <div class="card"">
+    <img src="/static/miningcalcs.png" class="card-img-top">
+    <div class="card-body">
+      <!-- <h5 class="card-title">Mining Profit Calcs</h5> -->
+      <!-- <p class="card-text">This tool helps you BLAH BLAH BLAH BLHABLHAB LH</p> -->
+      <a href="/mining_calcs" class="btn btn-primary">Mining Profit Calcs</a>
     </div>
   </div>
 
   <div class="card"">
     <img src="/static/opreturn.png" class="card-img-top">
     <div class="card-body">
-      <h5 class="card-title">OP_RETURN Reader</h5>
-      <p class="card-text">This tool helps you read the blockchain!!</p>
-      <a href="/opreturn" class="btn btn-primary">Launch app</a>
+      <!-- <h5 class="card-title">OP_RETURN Reader</h5> -->
+      <!-- <p class="card-text">This tool helps you read the blockchain!!</p> -->
+      <a href="/opreturn" class="btn btn-primary">OP_RETURN reader</a>
+    </div>
+  </div>
+
+  <div class="card"">
+    <img src="/static/braiinspool.png" class="card-img-top">
+    <div class="card-body">
+      <!-- <h5 class="card-title">BraiinsPool API</h5> -->
+      <!-- <p class="card-text">Use the Braiins Pool API</p> -->
+      <!-- <a href="/braiinspool" class="btn btn-primary">Launch app</a> -->
+      <a href="/braiinspool" class="btn btn-primary">Braiins Pool API</a>
     </div>
   </div>
 </div>
