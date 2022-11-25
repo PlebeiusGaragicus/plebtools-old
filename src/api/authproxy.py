@@ -198,3 +198,11 @@ class AuthServiceProxy(object):
         else:
             log.debug("<-- "+responsedata)
         return response
+
+
+# best_block_hash = rpc_connection.getbestblockhash()
+# rpc_connection.getblock(best_block_hash)
+# commands = [ [ "getblockhash", height] for height in range(100) ]
+# block_hashes = rpc_connection.batch_(commands)
+# blocks = rpc_connection.batch_([ [ "getblock", h ] for h in block_hashes ])
+# block_times = [ block["time"] for block in blocks ]
