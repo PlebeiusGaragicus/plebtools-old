@@ -8,3 +8,5 @@
 # but, then write a s start9 wrapper repo for this, and make sure the app can be told what environment it is running inside... so that its behavior will change
 # depending on if it is running in a docker container, or on a local machine, or on a start9 node, etc...
 
+# TODO
+# make the images smaller - 500x500 is too big
