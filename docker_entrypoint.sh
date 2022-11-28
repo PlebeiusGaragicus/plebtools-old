@@ -33,6 +33,7 @@ write_properties_stats_yaml() {
 
 # run the application
 python -m src
+# exec /usr/bin/local python3 -m src
 
 # get ip address of this mac machine
 # echo $(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')

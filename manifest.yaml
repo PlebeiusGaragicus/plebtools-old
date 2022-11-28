@@ -7,14 +7,15 @@ title: "PlebTools"
 
 # https://github.com/Start9Labs/emver-rs
 # major, minor, patch, and revision
-version: 0.1.0
+version: 0.2.0
 
 release-notes: >-
-  It's not finished yet, but it's getting there...
+  Still very much a work in progress.
+  
+  I am importing code, adding features and tidying up.
 
-  This is a hello world app
-
-  more to come...
+  -Added a settings 'app' (not done yet)
+  -Changed layout of the main page
 
 license: mit
 
@@ -28,9 +29,11 @@ build: ["make"]
 description:
   short: A collection of tools for the Bitcoin Pleb.
   long: >-
-    NoThInG HeRe yet...
-    NoThInG HeRe yet...
-    NoThInG HeRe yet...
+    These tools aim to empower the Bitcoin Pleb to take control of their own node, read the blockchain and do their own research.
+
+    This is a work in progress and I am slowly adding features and tidying up the code.
+
+    New tools will be added as I have time to work on them.
 
 # These assets are static files necessary for packaging the service for Start9 (into an s9pk). Each value is a path to the specified asset. If an asset is missing from this list, or otherwise denoted, it will be defaulted to the values denoted below.
 assets:
