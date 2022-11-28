@@ -19,6 +19,9 @@ from . import tool_settings
 from . import tool_blockstreamsat
 from . import tool_historicalanalysis
 from . import tool_treasurymanagement
+from . import tool_sideloader
+from . import tool_terminal
+
 
 app = Flask(__name__, static_folder='../web/static', template_folder='../web/templates')
 
@@ -75,6 +78,8 @@ if __name__ == "__main__":
     app.add_url_rule('/blockstreamsat', 'blockstreamsat', pywebio.platform.flask.webio_view( tool_blockstreamsat.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/historicalanalysis', 'historicalanalysis', pywebio.platform.flask.webio_view( tool_historicalanalysis.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/treasurymanagement', 'treasurymanagement', pywebio.platform.flask.webio_view( tool_treasurymanagement.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    app.add_url_rule('/sideloader', 'sideloader', pywebio.platform.flask.webio_view( tool_sideloader.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    app.add_url_rule('/terminal', 'terminal', pywebio.platform.flask.webio_view( tool_terminal.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/settings', 'settings', pywebio.platform.flask.webio_view( tool_settings.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
 
     app.run(host='0.0.0.0', port=config.PORT, debug=config.DEBUG)

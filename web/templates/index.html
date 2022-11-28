@@ -7,9 +7,12 @@
     background-color: #140f2a;
   }
   h1 {
-    margin-top: 30px;
+    margin-top: 2rem;
     text-align:center;
     color: rgb(124, 186, 239);
+  }
+  h5 {
+    margin-top: 1rem;
   }
   .row {
     display: flex;
@@ -27,13 +30,15 @@
     margin-right: 5px;
     text-align: center;
   }
-  /* .h5 {
-    margin-top: 10px;
-  } */
 </style>
 
 <!-- TOOLS -->
-<h1 style=>Tools:</h1>
+<!-- <h1 style=>Tools:</h1>
+<div class="row">
+</div> -->
+
+<!-- UTILITIES -->
+<h1>Utilities:</h1>
 <div class="row">
   <div class="card"">
     <h5 class="card-title">bitcoin-cli curl formatter</h5>
@@ -50,7 +55,21 @@
           <a href="/currency_converter" class="btn btn-primary">Launch tool</a>
         </div>
       </div>
-</div>
+      <div class="card"">
+        <h5 class="card-title">Blockstream Satellite</h5>
+        <img src="/static/stub.png" class="card-img-top">
+        <div class="card-body">
+          <a href="/blockstreamsat" class="btn btn-primary">Launch tool</a>
+        </div>
+      </div>
+      <div class="card"">
+        <h5 class="card-title">command line</h5>
+        <img src="/static/stub.png" class="card-img-top">
+        <div class="card-body">
+          <a href="/terminal" class="btn btn-primary">Launch tool</a>
+        </div>
+      </div>
+    </div>
 
 <!-- BITCOIN MINING -->
 <h1>Bitcoin mining:</h1>
@@ -103,19 +122,21 @@
       </div>
     </div>
 </div>
-    
-<!-- UTILITIES -->
-<h1>Utilities:</h1>
+
+
+<!-- SIDE-LOADING: -->
+<h1>Side-loading:</h1>
 <div class="row">
     <div class="card"">
-      <h5 class="card-title">Blockstream Satellite</h5>
+      <h5 class="card-title">Service side-loader:</h5>
       <img src="/static/stub.png" class="card-img-top">
       <div class="card-body">
-        <a href="/blockstreamsat" class="btn btn-primary">Launch tool</a>
+        <a href="/sideloader" class="btn btn-primary">Launch tool</a>
       </div>
     </div>
-
 </div>
+
+<br>
 
       
       {% endblock %}
