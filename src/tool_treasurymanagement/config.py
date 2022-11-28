@@ -4,9 +4,9 @@
 """
 """
 
-from OSINTofBlockchain.BitcoinData.BitcoinNodeHelper import BitcoinNodeHelper
+# from OSINTofBlockchain.BitcoinData.BitcoinNodeHelper import BitcoinNodeHelper
 
-my_node: BitcoinNodeHelper = None
+# my_node: BitcoinNodeHelper = None
 
 # TODO - MAYBE THESE AREN'T THE BEST.. BUT THEY WORK FOR NOW...
 # price = None
@@ -16,3 +16,5 @@ my_node: BitcoinNodeHelper = None
 
 # the number of projections that we've run so we can increment the number when they are displayed
 analysis_number = 0
+
+APP_TITLE = "Treasury Management"

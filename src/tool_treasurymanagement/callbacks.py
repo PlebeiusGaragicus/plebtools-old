@@ -3,21 +3,21 @@ import datetime
 
 from pywebio import output, pin
 
-from OSINTofBlockchain.BitcoinData import (
-    coinbase_API,
-    MEGAHASH,
-    ONE_HUNDRED_MILLION,
-    EXPECTED_BLOCKS_PER_DAY,
-    fiat,
-    btc,
-    block_subsity,
-    get_hashrate_from_difficulty
-)
+# from OSINTofBlockchain.BitcoinData import (
+#     coinbase_API,
+#     MEGAHASH,
+#     ONE_HUNDRED_MILLION,
+#     EXPECTED_BLOCKS_PER_DAY,
+#     fiat,
+#     btc,
+#     block_subsity,
+#     get_hashrate_from_difficulty
+# )
 
 from . import config
 from .constants import *
 
-from OSINTofBlockchain.Apps import get_input
+# from OSINTofBlockchain.Apps import get_input
 
 
 

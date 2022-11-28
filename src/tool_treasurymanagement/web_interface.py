@@ -26,19 +26,18 @@ a lot of the code that runs the pywebio user interface
 import logging
 import datetime
 
-from pywebio import pin
-from pywebio import output
+from pywebio import output, pin, config
 
-from OSINTofBlockchain.BitcoinData import (
-    BitcoinNodeHelper,
-    coinbase_API,
-    blockchaininfo_API
-)
+# from OSINTofBlockchain.BitcoinData import (
+#     BitcoinNodeHelper,
+#     coinbase_API,
+#     blockchaininfo_API
+# )
 
+from .config import *
 from .constants import *
-from . import config
-
 from . import callbacks
+
 
 from .popup import (
     popup_breakeven_analysis,
@@ -347,3 +346,8 @@ def show_interface():
     output.put_button( 'Simulate!', onclick=show_projection, color='success' )
 
     refresh()
+
+
+@config(title=APP_TITLE, theme='dark')
+def main():
+    output.put_text("NOTHING YET")

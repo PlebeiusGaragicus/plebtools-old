@@ -16,13 +16,11 @@ from . import tool_miningcalcs
 from . import tool_opreturn
 from . import tool_braiinspool
 from . import tool_settings
+from . import tool_blockstreamsat
+from . import tool_historicalanalysis
+from . import tool_treasurymanagement
 
-app = Flask(__name__)
-# TODO tidy up
-# app = Flask(__name__,
-#             static_url_path='', 
-#             static_folder='web/static',
-#             template_folder='web/templates')
+app = Flask(__name__, static_folder='../web/static', template_folder='../web/templates')
 
 @app.route("/")
 def index():
@@ -74,6 +72,9 @@ if __name__ == "__main__":
     app.add_url_rule('/mining_calcs', 'mining_calcs', pywebio.platform.flask.webio_view( tool_miningcalcs.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/opreturn', 'opreturn', pywebio.platform.flask.webio_view( tool_opreturn.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/braiinspool', 'braiinspool', pywebio.platform.flask.webio_view( tool_braiinspool.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    app.add_url_rule('/blockstreamsat', 'blockstreamsat', pywebio.platform.flask.webio_view( tool_blockstreamsat.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    app.add_url_rule('/historicalanalysis', 'historicalanalysis', pywebio.platform.flask.webio_view( tool_historicalanalysis.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    app.add_url_rule('/treasurymanagement', 'treasurymanagement', pywebio.platform.flask.webio_view( tool_treasurymanagement.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/settings', 'settings', pywebio.platform.flask.webio_view( tool_settings.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
 
     app.run(host='0.0.0.0', port=config.PORT, debug=config.DEBUG)

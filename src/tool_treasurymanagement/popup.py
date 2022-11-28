@@ -19,14 +19,15 @@ import pandas as pd
 
 import urllib.request as ur
 
-from OSINTofBlockchain.BitcoinData import BitcoinNodeHelper, coinbase_API, block_subsity, get_hashrate_from_difficulty
+# from OSINTofBlockchain.BitcoinData import BitcoinNodeHelper, coinbase_API, block_subsity, get_hashrate_from_difficulty
 
-from OSINTofBlockchain.BitcoinData.constants import *
+# from OSINTofBlockchain.BitcoinData.constants import *
 
-from . import config
+from .config import *
 from .constants import *
 from .callbacks import update_numbers
 
+from src.constants import *
 
 #########################################################################
 # shamelessly stolen from here and modified
@@ -398,47 +399,47 @@ def popup_breakeven_analysis():
 
 
 
-def avgerage_block_fee(node: BitcoinNodeHelper, nBlocks = EXPECTED_BLOCKS_PER_DAY) -> int:
-    """
-        This will return the average fee going back nBlocks using the bitcoin cli at the provided path
+# def avgerage_block_fee(node: BitcoinNodeHelper, nBlocks = EXPECTED_BLOCKS_PER_DAY) -> int:
+#     """
+#         This will return the average fee going back nBlocks using the bitcoin cli at the provided path
 
-    """
+#     """
 
-    # I don't need this anymore
-    # if config.node_path == None:
-    #     return None
+#     # I don't need this anymore
+#     # if config.node_path == None:
+#     #     return None
 
-    blockheight = node.blockheight()
-    #blockheight = int(os.popen(f"{config.node_path} getblockcount").read())
+#     blockheight = node.blockheight()
+#     #blockheight = int(os.popen(f"{config.node_path} getblockcount").read())
 
-    with output.popup(f"Averaging transactions fees for last {nBlocks} blocks...", closable=False) as p:
+#     with output.popup(f"Averaging transactions fees for last {nBlocks} blocks...", closable=False) as p:
 
-        pin.put_input("remaining", value=nBlocks, label="Blocks remaining:")
-        pin.put_textarea("feescroller", value='')
-        pin.put_input('sofar', value='', label="Average so far:")
-        output.put_button("Stop early", color='danger', onclick=lambda: output.close_popup())
+#         pin.put_input("remaining", value=nBlocks, label="Blocks remaining:")
+#         pin.put_textarea("feescroller", value='')
+#         pin.put_input('sofar', value='', label="Average so far:")
+#         output.put_button("Stop early", color='danger', onclick=lambda: output.close_popup())
 
-        total_fee = 0
-        for bdx in range(blockheight-nBlocks, blockheight):
-            block_fee = int( os.popen(f"""{config.node_path} getblockstats {bdx} '["totalfee"]'""").read().split(': ')[1].split('\n')[0] )        
-            total_fee += block_fee
-            pin.pin['remaining'] = blockheight - bdx
-            pin.pin['sofar'] = f"{ (total_fee / (1 + bdx - blockheight + nBlocks)) :,.2f}"
+#         total_fee = 0
+#         for bdx in range(blockheight-nBlocks, blockheight):
+#             block_fee = int( os.popen(f"""{config.node_path} getblockstats {bdx} '["totalfee"]'""").read().split(': ')[1].split('\n')[0] )        
+#             total_fee += block_fee
+#             pin.pin['remaining'] = blockheight - bdx
+#             pin.pin['sofar'] = f"{ (total_fee / (1 + bdx - blockheight + nBlocks)) :,.2f}"
 
-            try:
-                pin.pin['feescroller'] = f"block: {bdx} --> fee: {block_fee:,}\n" + pin.pin["feescroller"]
-            except Exception as e:
-                logging.debug("", exc_info=True)
-                # this error happens if the popup was closed
-                return round(total_fee / (1 + bdx - blockheight + nBlocks), 2)
-            logging.info(f"block: {bdx} -->  fee: {format(block_fee, ',').rjust(11)} satoshi")
+#             try:
+#                 pin.pin['feescroller'] = f"block: {bdx} --> fee: {block_fee:,}\n" + pin.pin["feescroller"]
+#             except Exception as e:
+#                 logging.debug("", exc_info=True)
+#                 # this error happens if the popup was closed
+#                 return round(total_fee / (1 + bdx - blockheight + nBlocks), 2)
+#             logging.info(f"block: {bdx} -->  fee: {format(block_fee, ',').rjust(11)} satoshi")
 
-    output.close_popup()
+#     output.close_popup()
 
-    total_fee /= nBlocks
+#     total_fee /= nBlocks
 
-    logging.info(f"average block fee over last {nBlocks} blocks is {total_fee:,.2f} satoshi")
-    return round(total_fee, 2)
+#     logging.info(f"average block fee over last {nBlocks} blocks is {total_fee:,.2f} satoshi")
+#     return round(total_fee, 2)
 
 
 
