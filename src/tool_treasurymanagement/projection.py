@@ -3,33 +3,7 @@ import logging
 
 from pywebio import output, pin
 
-from OSINTofBlockchain.BitcoinData.helpers import btc
-
-from Apps import config
 from .constants import *
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -197,5 +171,70 @@ from .constants import *
 #         ], position=output.OutputPosition.TOP, open=True)
 
 #     output.toast("done.", color='success', duration=1)
+
+
+
+
+###############################
+def show_projection():
+    """ THIS FUNCTION TAKES THE VALUES FROM THE INPUT FIELDS AND RUNS THE PROJECTION...
+    """
+    output.toast("calculating...", color='warn', duration=1)
+    logging.info("running show_projection()")
+
+    # make_projection(
+    #     current_height=get_entered_height(),
+    #     months_to_project=get_entered_months(),
+    #     difficulty=get_entered_difficulty(),
+    #     ngf=get_entered
+    #     )
+    # make_projection(
+    #     months, height, avgfee, hashrate, wattage,
+    #                     price, pricegrow, pricegrow2, pricelag,
+    #                     network_difficulty, hashgrow,
+    #                     kWh_rate, opex,capex_in_sats, resale, poolfee
+    #                     )
+
+
+    return
+
+    with output.use_scope('projection', clear=True):
+        output.put_markdown( "# PROJECTION SUMMARIES:" )
+
+    res = calculate_projection(
+        months = months,
+        height = height,
+        avgfee = avgfee,
+        hashrate = hashrate,
+        wattage = wattage,
+        price = price,
+        pricegrow = pricegrow,
+        pricegrow2 = pricegrow2,
+        pricelag = pricelag,
+        network_difficulty = diff,
+        hashgrow = hashgrow,
+        kWh_rate = kWh_rate,
+        opex = opex,
+        capex_in_sats = btc(capex, bitcoin_price=price_when_bought),
+        resale = resell,
+        poolfee = poolfee,
+    )
+
+    config.analysis_number += 1
+
+    table = make_table_string(res)
+    with output.use_scope("result"):
+        output.put_collapse(title=f"analysis #{config.analysis_number}", content=[
+            output.put_html( pretty_graph(res) ),
+            output.put_collapse("Monthly Breakdown Table", content=[
+            output.put_markdown( table ),
+            output.put_table(tdata=[[
+                    output.put_file('projection.csv', content=b'123,456,789'),
+                    output.put_text("<<-- Download results as CSV file")
+                ]])
+        ])
+        ], position=output.OutputPosition.TOP, open=True)
+
+    output.toast("done.", color='success', duration=1)
 
 

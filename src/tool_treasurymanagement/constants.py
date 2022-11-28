@@ -1,19 +1,3 @@
-MAIN_TEXT = """# Open-Source Bitcoin Mining Profitability Calculator
-
-__The goal of this project is to inspire__ people to learn about bitcoin's built-in incentive structure - mining.
-
-__The purpose of this tool is to__ help bitcoin miners make sound business decisions - namely, how much to pay for equipment and what operating environment is needed to be profitable.
-
-"""
-
-REFERENCE_TEXT = """
-Also see:
-[Braiins Insights](https://insights.braiins.com/en/profitability-calculator/) <-- the gold-standard
-[red dirt mining](https://reddirtmining.io/calculator) <-- brand-new, and open-source
-[Crypto compate](https://www.cryptocompare.com/mining/calculator/btc) <-- this one sucks
-
-"""
-
 ### DEFAULT NUMBERS FOR THE USER INPUT FIELDS
 DEFAULT_POOL_FEE = 0 # per-cent (2 == 2%; 0.1 == 0.1%)
 DEFAUL_KPKWH = 0.075 # fiats per kWh

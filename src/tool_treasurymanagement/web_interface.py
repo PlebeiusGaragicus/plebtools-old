@@ -1,43 +1,15 @@
-# Distributed under the MIT software license, see the accompanying
-# file LICENSE or http://www.opensource.org/licenses/mit-license.php.
-
-"""
-This module contains the callbacks to the pywebio fields and
-a lot of the code that runs the pywebio user interface
-"""
-
 # TODO - remember!!!! run(method={...}) should be in a try: block so that output.info_popup can be run for the user!!!
-
-# TODO
-#     """ There is a global instance of a 'bitcoin node helper' in config.py - this function
-#     initializes that instance and verifies that it can pull data from it (by calling getblockchaininfo)
-
-#     If you supplied a username/password in the SETTINGS file, it will be used to setup the node.
-#     If you didn't, then DATA_DIRECTORY will be used to pull Bitcoin Core's .cookie file.
-#     If that doesn't work the program will show the user an error saying that a node could not be found/setup,
-#         and the functionality will default back to only being able to use current Bitcoin metrics for projections/calculations - which is fine.
-
-#     Note to self:  This function is as easy to 'get right' as my implementation of BitcoinNodeHelper allows.. also the specifics of my implementation inside the app - how could this be done better?
-
-# TODO - watt dollar!?!?!?!?
-# pin.put_input(name='wattdollar', label="WattDollar", readonly=True, value='', help_text="The product of an ASIC’s watts/Th multiplied by $/Th")
-
 
 import logging
 import datetime
 
 from pywebio import output, pin, config
 
-# from OSINTofBlockchain.BitcoinData import (
-#     BitcoinNodeHelper,
-#     coinbase_API,
-#     blockchaininfo_API
-# )
 
 from .config import *
 from .constants import *
 from . import callbacks
-
+from .projection import show_projection
 
 from .popup import (
     popup_breakeven_analysis,
@@ -47,8 +19,8 @@ from .popup import (
     popup_price_history
 )
 
-
-
+from src.api.coinbase import spot_price
+from src.api.blockchaininfo import bitcoin_height, bitcoin_difficulty
 
 def setup_node():
     # SETUP A BITCOIN NODE, IF POSSIBLE
@@ -62,31 +34,14 @@ def setup_node():
     logging.debug(f"{config.my_node=}")
 
 
-def view_node_stats():
-    """ TODO
-    """
-    pass
 
-
-def resolve_node_issue():
-    """ TODO
-    """
-    setup_node()
-    pass
-
-
-def refresh() -> None:
-    """ This function is called (1) at startup and (2) when the "refresh data" button is pushed
-
-        Use this function to setup a node if one hasn't been already TODO - maybe we can 'reinitialize it?' - why not?  That way if there is an error setup, the user can edit the SETTINGS file, for instance, and just click refresh and stay in the app the whole time.
-
-    """
+def load_network_state() -> None:
 
     setup_node()
 
     output.toast("refreshing network data...", color='info')
     #setup.download_bitcoin_network_data()
-    pin.pin[PIN_BTC_PRICE_NOW] = pin.pin[PIN_BOUGHTATPRICE] = coinbase_API.query_coinbase_bitcoin_spot_price()
+    pin.pin[PIN_BTC_PRICE_NOW] = pin.pin[PIN_BOUGHTATPRICE] = spot_price()
 
     # TODO - DEBUG VALUES
     # TODO RENAME COST TO TOTAL_MINER_CAPITAL_COST
@@ -97,8 +52,8 @@ def refresh() -> None:
     pin.pin[PIN_HASHRATE] = 90
 
     if config.my_node == None:
-        pin.pin[PIN_HEIGHT] = blockchaininfo_API.query_blockchaininfo_bitcoin_height()
-        pin.pin[PIN_NETWORKDIFFICULTY] = blockchaininfo_API.query_blockchaininfo_bitcoin_difficulty()
+        pin.pin[PIN_HEIGHT] = bitcoin_height()
+        pin.pin[PIN_NETWORKDIFFICULTY] = bitcoin_difficulty()
     else:
         pin.pin[PIN_HEIGHT] = config.my_node.blockchain_state.block_height
         pin.pin[PIN_NETWORKDIFFICULTY] = config.my_node.blockchain_state.difficulty
@@ -119,75 +74,10 @@ def refresh() -> None:
 
     output.toast("refresh done", color='success')
 
+
 def trythis(throwaway):
     if throwaway == None:
         pin.pin['test'] = 0
-
-
-
-###############################
-def show_projection():
-    """ THIS FUNCTION TAKES THE VALUES FROM THE INPUT FIELDS AND RUNS THE PROJECTION...
-    """
-    output.toast("calculating...", color='warn', duration=1)
-    logging.info("running show_projection()")
-
-    # make_projection(
-    #     current_height=get_entered_height(),
-    #     months_to_project=get_entered_months(),
-    #     difficulty=get_entered_difficulty(),
-    #     ngf=get_entered
-    #     )
-    # make_projection(
-    #     months, height, avgfee, hashrate, wattage,
-    #                     price, pricegrow, pricegrow2, pricelag,
-    #                     network_difficulty, hashgrow,
-    #                     kWh_rate, opex,capex_in_sats, resale, poolfee
-    #                     )
-
-
-    return
-
-    with output.use_scope('projection', clear=True):
-        output.put_markdown( "# PROJECTION SUMMARIES:" )
-
-    res = calculate_projection(
-        months = months,
-        height = height,
-        avgfee = avgfee,
-        hashrate = hashrate,
-        wattage = wattage,
-        price = price,
-        pricegrow = pricegrow,
-        pricegrow2 = pricegrow2,
-        pricelag = pricelag,
-        network_difficulty = diff,
-        hashgrow = hashgrow,
-        kWh_rate = kWh_rate,
-        opex = opex,
-        capex_in_sats = btc(capex, bitcoin_price=price_when_bought),
-        resale = resell,
-        poolfee = poolfee,
-    )
-
-    config.analysis_number += 1
-
-    table = make_table_string(res)
-    with output.use_scope("result"):
-        output.put_collapse(title=f"analysis #{config.analysis_number}", content=[
-            output.put_html( pretty_graph(res) ),
-            output.put_collapse("Monthly Breakdown Table", content=[
-            output.put_markdown( table ),
-            output.put_table(tdata=[[
-                    output.put_file('projection.csv', content=b'123,456,789'),
-                    output.put_text("<<-- Download results as CSV file")
-                ]])
-        ])
-        ], position=output.OutputPosition.TOP, open=True)
-
-    output.toast("done.", color='success', duration=1)
-
-
 
 
 def save_all_vars(vars: dict) -> None:
@@ -195,31 +85,11 @@ def save_all_vars(vars: dict) -> None:
 
 
 ####################################
+@output.use_scope('main')#, clear=True):
 def show_interface():
-    """ This is basically the web page in one function.
 
-        This function displays the items on the screen that the user interacts with.
-
-        The items (text fields and buttons) have callbacks which make them interactive. A
-        thread was started earlier that is keeping PyWebIO alive so these callbacks can be
-        triggered.
-    """
-
-    with output.use_scope("TOP"):
-        output.put_markdown( MAIN_TEXT )
-        output.put_collapse(title="See also:", content=[
-            output.put_markdown( REFERENCE_TEXT )
-        ]),
-        output.put_collapse(title="ANALYSIS TOOLS:", content=[
-            output.put_button("fiat <-> bitcoin converter", onclick=popup_currencyconverter, color='info'),
-            output.put_button("refresh data", onclick=refresh),
-            output.put_button("break-even analysis", onclick=popup_breakeven_analysis, color='info'),
-            output.put_button("block fee analysis", onclick=popup_fee_analysis),
-            output.put_button("price history analysis", onclick=popup_price_history),
-            output.put_button("hashrate history analysis", onclick=popup_difficulty_history)
-        ])
-
-
+    output.put_markdown(f"# {APP_TITLE}")
+    # output.put_button("refresh data", onclick=refresh)
 
     output.put_markdown("### BITCOIN NETWORK STATE")
     output.put_table([[
@@ -350,4 +220,5 @@ def show_interface():
 
 @config(title=APP_TITLE, theme='dark')
 def main():
-    output.put_text("NOTHING YET")
+
+    show_interface()

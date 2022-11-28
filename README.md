@@ -50,7 +50,11 @@ Convert between fiat currency and bitcoin.  Inspired by [bitcoin-convert](
 ...
 
 ## Bitcoin mining profitability calculator
-...
+[Braiins Insights](https://insights.braiins.com/en/profitability-calculator/) <-- the gold-standard
+
+[red dirt mining](https://reddirtmining.io/calculator) <-- brand-new, and open-source
+
+[Crypto compate](https://www.cryptocompare.com/mining/calculator/btc) <-- this one sucks
 
 ## Bitcoin mining treasury management simulator
 ...

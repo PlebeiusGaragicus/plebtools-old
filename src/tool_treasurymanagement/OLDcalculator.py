@@ -5,9 +5,6 @@ import logging
 
 import pywebio
 
-from OSINTofBlockchain.Apps.TreasurySimulator import web_interface
-#from AppFrontEnd import web_interface
-
 
 def cleanup():
     """ We call exit to stop the python script and kill the server.
