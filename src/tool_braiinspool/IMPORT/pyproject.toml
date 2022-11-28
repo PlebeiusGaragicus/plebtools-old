@@ -1,0 +1,11 @@
+[project]
+name = "myAPI"
+dependencies = [
+    "twilio",
+    "adafruit_io",
+
+    "python-dotenv".
+    "pytest",
+
+    "git+https://github.com/suchdatums/cdot.git"
+]

@@ -20,17 +20,26 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-                <!--  HOME -->
-                <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('index') }}">About</a>
-              </li>
-
-              <!--  DASHBOARD -->
+              
+              <!--  CLOCK -->
               <li class="nav-item">
-                <a class="nav-link" href="/dashboard">Dashboard</a>
+                <a class="nav-link" href="{{ url_for('clock') }}">Clock</a>
               </li>
 
+              <!--  CONTRIBUTE -->
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('contribute') }}">Contribute</a>
+              </li>
+
+              <!--  TOOLS -->
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('index') }}">Tools</a>
+              </li>
+
+              <!--  SETTINGS -->
+              <li class="nav-item">
+                <a class="nav-link" href="/settings">Settings</a>
+              </li>
             </ul>
           </div>
         </div>

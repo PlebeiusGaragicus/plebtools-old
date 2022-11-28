@@ -19,7 +19,7 @@ Welcome to PlebTools - a collection of tools that Bitcoiners (Plebs and Maxis, a
 
 This project would not be possible without the team at [Start9](https://twitter.com/start9labs) who created EmbassyOS.  With their reminders that the "Cloud" simply means "someone else's computer" and their out-of-the-box integration with the TOR network, Start9 seeks to provide every EmbassyOS user with a tool for self-sovereign computing.
 
-Bitcoin empowers and incentivizes the individual to host their own software on their own computer and connect it to the world.  EmbassyOS runs with this idea by making it possible for the non-technical user to self-host software on computers they own and control.  Also, with their focus on allowing anyone to develop apps (or "package services") for their platform, anyone who can code can take part in this and write software meant to be run **for** and **by** the user.  Additionally, they make simple the ability to side-load these "services" in order to prevent themselves from being the gatekeepers on what software is allowed to run on the computers you own.
+Bitcoin empowers and incentivizes the individual to host their own software on their own computer and connect it to the world.  EmbassyOS runs with this idea by making it possible for the non-technical user to self-host software on computers they own and control.  Also, with their focus on allowing anyone to develop apps (or "package services") for their platform, anyone who can code can take part and write software that is meant to be run **for** and **by** the user.  Additionally, they make simple the ability to side-load these "services" in order to prevent themselves from being the gatekeepers on what software is allowed to run on the computers you own.
 
 Learn more about "service packaging" in [Developer Docs](https://start9.com/latest/developer-docs/).
 
@@ -27,10 +27,12 @@ Learn more about "service packaging" in [Developer Docs](https://start9.com/late
 # List of tools (so far):
 
 ## OP_RETURN reader
+Scan any bitcoin block for OP_RETURN messages.  Inspired by [nodeyez](https://github.com/vicariousdrama/nodeyez)
 
 ![OP_RETURN reader screenshot](src/static/opreturn.png)
 
-Scan any bitcoin block for OP_RETURN messages.  Inspired by [nodeyez](https://github.com/vicariousdrama/nodeyez)
+
+---
 
 # How to install yourself
 

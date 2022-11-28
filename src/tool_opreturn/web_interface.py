@@ -97,7 +97,7 @@ def do_work():
 
     height = pin.pin['height']
 
-    if height is None or height is '':
+    if height == None or height is '':
         output.toast("Enter a block height to read OP_RETURN data")
         return
 

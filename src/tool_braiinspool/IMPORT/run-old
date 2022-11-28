@@ -1,0 +1,88 @@
+# change the directory to the one that this current running script is in (so relative pathnames work) - this is so "crontab -e" works...
+#cd $(dirname $0)
+cd $(dirname $0)
+
+# I DON'T KNOW HOW I FIXED IT... WHY IT WAS WRONG.. OR ANYTHING BUT IT DIDN'T LIKE SINGLE OR DOUBLE QUOTES
+# echo $PWD >> ./debug.log
+# echo $0 >> ./debug.log
+# echo $(dirname $0) >> ./debug.log
+
+# log this run
+echo "
+$(date) : user:$(whoami)
+RUNNING: $0 $1" >> ./debug.log
+
+# activate python virtual environment
+# BUG fixed... if you ever intend to run python code in this or any shell script... you HAVE TO activate the venv first
+. venv/bin/activate
+
+# if no function name is given, show helpful error (list the available functions in PyBraiinsAPI)
+if [ -z "$1" ]; then
+    echo "
+    ERROR: no function specified - quitting
+
+    Usage example:       ./run function_name
+
+    Existing function names:"
+    python3 -c "import PyBraiinsAPI; [ print('\t' + fn) for fn in PyBraiinsAPI.__all__ ]"
+    exit
+fi
+
+# load environment variables
+export $(grep -v '^#' TOKENS | xargs)
+
+# run the supplied method
+python3 -c "
+import PyBraiinsAPI
+if __name__ == '__main__':
+    PyBraiinsAPI.$1()"
+
+
+
+
+
+
+
+
+
+
+
+
+
+# #!/bin/bash -i
+
+# noSuchFunction() {
+# echo "
+#     Usage example:       ./run function_name
+
+#     Existing function names:"
+#     python3 -c "import BitcoinMiningCalcs; [ print('\t' + fn) for fn in BitcoinMiningCalcs.__all__ ]"
+#     exit
+# }
+
+# # if no function name is given, show helpful error (list the available functions in PyBraiinsAPI)
+# if [ -z "$1" ]; then
+#     noSuchFunction
+# fi
+
+# # log this run
+# echo "
+# $(date) : user:$(whoami)
+# RUNNING: $0 $1" >> ./debug.log
+
+# # activate the python virtual environment
+# . ./venv/bin/activate
+
+# # load environment variables
+# export $(grep -v '^#' TOKENS | xargs)
+
+# # run the application
+# python3 -c "
+# import BitcoinMiningCalcs;
+# try:
+#     BitcoinMiningCalcs.$1()
+# except AttributeError:
+#     exit(1)"
+
+# # This will show a helpful hint if the user supplied a wrong function (which will cause an Exception and exit(1))
+# (($?)) && noSuchFunction

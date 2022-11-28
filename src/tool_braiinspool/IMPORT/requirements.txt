@@ -1,0 +1,7 @@
+python-dotenv
+pytest
+
+adafruit_io
+twilio
+
+git+https://github.com/suchdatums/cdot.git
