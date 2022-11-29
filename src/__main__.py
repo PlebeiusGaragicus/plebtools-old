@@ -83,15 +83,3 @@ if __name__ == "__main__":
     app.add_url_rule('/settings', 'settings', pywebio.platform.flask.webio_view( tool_settings.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
 
     app.run(host='0.0.0.0', port=config.PORT, debug=config.DEBUG)
-
-    # OLD WAY OF DOING THINGS
-    # # https://pywebio.readthedocs.io/en/latest/platform.html?highlight=start_thread#pywebio.platform.tornado_http.start_server
-    # # pywebio.platform.tornado_http.start_server(main_page.main_page, port=config.PORT, debug=config.DEBUG, cdn=False)
-    # pywebio.platform.tornado_http.start_server(
-    #     main_menu.main_menu,
-    #     host="0.0.0.0",
-    #     # auto_open_webbrowser=True, # TODO don't use when debugging... it's annoying!
-    #     # open_webbrowser_tab=True,
-    #     port=config.PORT,
-    #     debug=config.DEBUG,
-    #     cdn=False)
