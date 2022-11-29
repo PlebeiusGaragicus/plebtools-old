@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 import sys
-import os
 import logging
-import dotenv
 
 from flask import Flask, render_template
 import pywebio
 
 from . import config
+
 from . import tool_dashboard
 from . import tool_rpccurlhelper
 from . import tool_currencyconvert
@@ -25,6 +24,7 @@ from . import tool_terminal
 
 app = Flask(__name__, static_folder='../web/static', template_folder='../web/templates')
 
+
 @app.route("/")
 def index():
     return render_template("index.html", title=config.APP_TITLE)
@@ -39,31 +39,27 @@ def contribute():
 
 
 def setup_logging() -> None:
-    # TODO - how to have multiple env files...? one for debug?  Pass in the env file as a command line arg?
-    # dotenv.load_dotenv(".env")
-
-    if os.getenv("DEBUG") == "1":
-        config.DEBUG = True
 
     logging.basicConfig(
-        # level=logging.DEBUG if config.DEBUG else logging.INFO, # TODO put this back once it's done, done
-        level=logging.DEBUG,
+        level=logging.DEBUG if config.DEBUG else logging.INFO,
         format="%(name)s [%(levelname)s] (%(filename)s @ %(lineno)d) %(message)s",
 
         ### TODO CRASHED! PermissionError: [Errno 13] Permission denied: '/debug.log'
-        handlers=[logging.FileHandler("debug.log", mode='a'), logging.StreamHandler(sys.stdout)] if config.DEBUG == True else [logging.StreamHandler(sys.stdout)],
+        handlers=[logging.FileHandler("./debug.log", mode='a'), logging.StreamHandler(sys.stdout)] if config.DEBUG == True else [logging.StreamHandler(sys.stdout)],
     )
 
-    if config.DEBUG:
+    if config.DEBUG == True:
         #logging.getLogger("pywebio").addHandler([logging.StreamHandler(sys.stdout), logging.FileHandler("debug.log", mode='a')])
         logging.getLogger("pywebio").addHandler(logging.StreamHandler(sys.stdout))
+    else:
+        logging.getLogger("werkzeug").setLevel(logging.WARNING)
+        logging.getLogger("pywebio").setLevel(logging.WARNING)
 
     # don't log the tornado webserver stuff
     logging.getLogger("tornado.access").setLevel(logging.WARNING)
 
-    logging.info("DEBUG MODE: {}".format(config.DEBUG))
+    logging.debug("DEBUG MODE: {}".format(config.DEBUG))
     logging.debug("arguments: {}".format(sys.argv))
-
 
 
 if __name__ == "__main__":

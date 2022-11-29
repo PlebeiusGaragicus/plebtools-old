@@ -12,3 +12,4 @@ embassy.js
 debug.log
 
 .env
+settings.json
