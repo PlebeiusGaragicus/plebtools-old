@@ -19,10 +19,6 @@ import pandas as pd
 
 import urllib.request as ur
 
-# from OSINTofBlockchain.BitcoinData import BitcoinNodeHelper, coinbase_API, block_subsity, get_hashrate_from_difficulty
-
-# from OSINTofBlockchain.BitcoinData.constants import *
-
 from .config import *
 from .constants import *
 from .callbacks import update_numbers

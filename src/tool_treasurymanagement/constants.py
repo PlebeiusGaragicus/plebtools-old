@@ -35,11 +35,6 @@ PIN_INFRA_LOAN_MONTHLY = 'infra_loan_monthly'
 
 
 
-
-
-
-
-
 PIN_WATTAGE = 'wattage'
 PIN_HASHRATE = 'hashrate'
 PIN_BOUGHTATPRICE = 'boughtatprice'
@@ -96,7 +91,7 @@ OPTION_NEVERSELL = "Never sell machine"
 # THESE ARE DICTIONARY ITEM NAMES FOR THE RESULTS DICT WE CALCULATE
     ## CONSTANTS
 KEY_MONTHS_TO_PROJECT = 'months'
-KEY_START_HEIGHT = 'start height'
+KEY_HEIGHT = 'height'
 KEY_AVGFEE = 'avgfee'
 KEY_MY_HASHRATE = 'my hashrate'
 KEY_WATTAGE = 'wattage'

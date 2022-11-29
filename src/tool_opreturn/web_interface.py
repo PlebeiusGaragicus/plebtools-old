@@ -5,10 +5,9 @@ import json
 import dotenv
 from pywebio import output, pin, config
 
-from src.api.authproxy import AuthServiceProxy, JSONRPCException
+from src.api.authproxy import AuthServiceProxy, JSONRPCException, CustomJsonEncoder
 
 from .config import *
-from .callbacks import *
 
 tip = 0
 
@@ -62,12 +61,6 @@ def main():
         show_opreturns()
 
 
-class CustomJsonEncoder(json.JSONEncoder):
-
-    def default(self, obj):
-        if isinstance(obj, decimal.Decimal):
-            return float(obj)
-        return super(CustomJsonEncoder, self).default(obj)
 
 def show_opreturns():
     output.clear('opreturns')
@@ -76,10 +69,8 @@ def show_opreturns():
 
 @output.use_scope('opreturns')
 def do_work():
-    # user = os.getenv('RPC_USER')
-    user = '__cookie__'
-    # pswd = os.getenv('RPC_PASS')
-    pswd = os.getenv('COOKIE')
+    user = os.getenv('RPC_USER')
+    pswd = os.getenv('RPC_PASS')
     host = os.getenv('RPC_HOST')
     port = os.getenv('RPC_PORT')
 
@@ -97,7 +88,7 @@ def do_work():
 
     height = pin.pin['height']
 
-    if height == None or height is '':
+    if height == None or height == '':
         output.toast("Enter a block height to read OP_RETURN data")
         return
 

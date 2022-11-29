@@ -1,28 +1,67 @@
 # TODO - remember!!!! run(method={...}) should be in a try: block so that output.info_popup can be run for the user!!!
 
+import os
+import json
 import logging
 import datetime
+import dotenv
 
 from pywebio import output, pin, config
 
+from src.api.authproxy import AuthServiceProxy, JSONRPCException, CustomJsonEncoder
 
 from .config import *
 from .constants import *
 from . import callbacks
 from .projection import show_projection
 
-from .popup import (
-    popup_breakeven_analysis,
-    popup_currencyconverter,
-    popup_difficulty_history,
-    popup_fee_analysis,
-    popup_price_history
-)
-
 from src.api.coinbase import spot_price
 from src.api.blockchaininfo import bitcoin_height, bitcoin_difficulty
 
 def setup_node():
+    user = os.getenv('RPC_USER')
+    pswd = os.getenv('RPC_PASS')
+    host = os.getenv('RPC_HOST')
+    port = os.getenv('RPC_PORT')
+
+    rpc_url = f"http://{user}:{pswd}@{host}:{port}"
+    node = AuthServiceProxy(rpc_url)
+    # rpc_connection = AuthServiceProxy(rpc_url)
+    logging.debug(f"{rpc_url=}")
+
+    global tip
+    try:
+        tip = node.getblockcount()
+    except JSONRPCException as e:
+        output.toast(f"ERROR: {e}", color='error', duration=10)
+        output.toast(f"Check your RPC connection settings", color='warn', duration=10)
+        return
+
+    height = pin.pin[PIN_HEIGHT]
+
+    if height == None or height == '':
+        output.toast("Enter a block height to read OP_RETURN data")
+        return
+
+    if height > tip:
+        output.toast(f"Block height {height} is higher than the current tip {tip}", position='top', duration=3)
+        return
+
+    hash = node.getblockhash( height )
+    try:
+        block = node.getblock( hash, 2 ) # call with verbosity 2 in order to get tx details
+    except JSONRPCException as e:
+        output.toast(f"ERROR: {e}", color='error', duration=10)
+        return
+    block = json.loads( json.dumps( block , cls=CustomJsonEncoder) )
+
+
+
+
+
+
+
+    return
     # SETUP A BITCOIN NODE, IF POSSIBLE
     logging.debug(f"{config.my_node=}")
     try:
@@ -41,6 +80,7 @@ def load_network_state() -> None:
 
     output.toast("refreshing network data...", color='info')
     #setup.download_bitcoin_network_data()
+    # TODO - need to fail gracefully if I can't get the price.. just alert the user!!!
     pin.pin[PIN_BTC_PRICE_NOW] = pin.pin[PIN_BOUGHTATPRICE] = spot_price()
 
     # TODO - DEBUG VALUES
@@ -85,11 +125,10 @@ def save_all_vars(vars: dict) -> None:
 
 
 ####################################
-@output.use_scope('main')#, clear=True):
+@output.use_scope('main', clear=True)
 def show_interface():
 
     output.put_markdown(f"# {APP_TITLE}")
-    # output.put_button("refresh data", onclick=refresh)
 
     output.put_markdown("### BITCOIN NETWORK STATE")
     output.put_table([[
@@ -215,10 +254,13 @@ def show_interface():
 
     output.put_button( 'Simulate!', onclick=show_projection, color='success' )
 
-    refresh()
-
+    load_network_state()
 
 @config(title=APP_TITLE, theme='dark')
 def main():
+
+    dotenv.load_dotenv()
+
+    setup_node()
 
     show_interface()

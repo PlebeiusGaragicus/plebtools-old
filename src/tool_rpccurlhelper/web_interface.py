@@ -1,16 +1,16 @@
-from pywebio import output, config
+from pywebio import output, config, session
 
 from .const import *
 from .callbacks import *
 
-# def cleanup( menu_callback: callable ):
-#     output.clear('output')
-#     output.clear('history')
-#     output.clear('help')
-#     menu_callback()
+def cleanup( ):
+    # TODO this doesn't work apparently... with the say we are running the sessions (??) look into this
+    logging.debug("I HOPE THIS IS NOT GOOD-BYE FOREVER!!! <3 <3 <3")
 
 @config(title=APP_TITLE, theme='dark')
 def main():
+    logging.debug("\n>>>> Starting app: bitcoin-cli RPC curl formatter !!!!!!!!!!!!!")
+    session.defer_call(cleanup) # TODO this does not work with thread-based something sessions something something
     # output.clear('app')
     with output.use_scope('main', clear=True):
         # output.put_button("<<- Main Menu", color='danger', onclick=lambda: cleanup(menu_callback))
