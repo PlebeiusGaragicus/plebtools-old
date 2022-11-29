@@ -1,4 +1,4 @@
 source venv/bin/activate
 
-# python3 -m src
-DEBUG=1 python3 -m src
+python3 -m src
+# DEBUG=1 python3 -m src
