@@ -1,7 +1,6 @@
 # TODO - remember!!!! run(method={...}) should be in a try: block so that output.info_popup can be run for the user!!!
 
 import os
-import json
 import logging
 import datetime
 import dotenv
@@ -72,16 +71,16 @@ def load_network_state() -> None:
     callbacks.update_timestamp()
     callbacks.update_numbers() # this is the callback function used to ensure all UI read_only fields are updated
 
-    with output.use_scope("TOP"):
-        if config.my_node == None:
-            output.put_button("NO NODE SETUP - CLICK HERE TO RESOLVE", onclick=None, color='danger')
-        else:
-            if config.my_node.pruned_height != 0: # IS PRUNED
-                output.put_button("PRUNED NODE RUNNING - CLICK TO VIEW STATUS", onclick=None, color='info')
-                ph = config.my_node.pruned_height
-                output.put_text(f"Node is pruned to height: {ph} : ({datetime.datetime.fromtimestamp(config.my_node.get_block_time(ph))})")
-            else:
-                output.put_button("NODE RUNNING - CLICK TO VIEW STATUS", onclick=None, color='success')
+    # with output.use_scope("TOP"):
+    #     if config.node == None:
+    #         output.put_button("NO NODE SETUP - CLICK HERE TO RESOLVE", onclick=None, color='danger')
+    #     else:
+    #         if config.my_node.pruned_height != 0: # IS PRUNED
+    #             output.put_button("PRUNED NODE RUNNING - CLICK TO VIEW STATUS", onclick=None, color='info')
+    #             ph = config.my_node.pruned_height
+    #             output.put_text(f"Node is pruned to height: {ph} : ({datetime.datetime.fromtimestamp(config.my_node.get_block_time(ph))})")
+    #         else:
+    #             output.put_button("NODE RUNNING - CLICK TO VIEW STATUS", onclick=None, color='success')
 
     output.toast("refresh done", color='success')
 

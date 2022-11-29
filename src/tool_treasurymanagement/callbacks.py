@@ -235,7 +235,12 @@ def update_satsperth() -> None:
         pin.pin[PIN_FIAT_PER_TH] = ''
         return
 
-    ret = btc(cost, bought_price) / hashrate
+    try:
+        ret = btc(cost, bought_price) / hashrate
+    except ZeroDivisionError as e:
+        logging.debug("divide by zero in update_satsperth()")
+        pin.pin[PIN_SAT_PER_TH] = 0
+        return
 
     pin.pin[PIN_SAT_PER_TH] = f"{ret:,.2f}"
 
