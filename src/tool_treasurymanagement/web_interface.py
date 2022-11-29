@@ -10,13 +10,15 @@ from pywebio import output, pin, config
 
 from src.api.authproxy import AuthServiceProxy, JSONRPCException, CustomJsonEncoder
 
-from .config import *
+from .config import node
 from .constants import *
 from . import callbacks
 from .projection import show_projection
 
 from src.api.coinbase import spot_price
 from src.api.blockchaininfo import bitcoin_height, bitcoin_difficulty
+
+APP_TITLE = "Treasury Management Simulator"
 
 def setup_node():
     user = os.getenv('RPC_USER')
@@ -25,53 +27,20 @@ def setup_node():
     port = os.getenv('RPC_PORT')
 
     rpc_url = f"http://{user}:{pswd}@{host}:{port}"
-    node = AuthServiceProxy(rpc_url)
-    # rpc_connection = AuthServiceProxy(rpc_url)
     logging.debug(f"{rpc_url=}")
 
-    global tip
+    node = AuthServiceProxy(rpc_url)
+
     try:
         tip = node.getblockcount()
     except JSONRPCException as e:
+        # TODO this isn't a small issue... allow the user to resolve.. or give better resolution details (go to settings and fix)
         output.toast(f"ERROR: {e}", color='error', duration=10)
         output.toast(f"Check your RPC connection settings", color='warn', duration=10)
+        node = None
         return
 
-    height = pin.pin[PIN_HEIGHT]
-
-    if height == None or height == '':
-        output.toast("Enter a block height to read OP_RETURN data")
-        return
-
-    if height > tip:
-        output.toast(f"Block height {height} is higher than the current tip {tip}", position='top', duration=3)
-        return
-
-    hash = node.getblockhash( height )
-    try:
-        block = node.getblock( hash, 2 ) # call with verbosity 2 in order to get tx details
-    except JSONRPCException as e:
-        output.toast(f"ERROR: {e}", color='error', duration=10)
-        return
-    block = json.loads( json.dumps( block , cls=CustomJsonEncoder) )
-
-
-
-
-
-
-
-    return
-    # SETUP A BITCOIN NODE, IF POSSIBLE
-    logging.debug(f"{config.my_node=}")
-    try:
-        # done - one line... all the logic is inside this class and everything can be set inside the ./SETTINGS file, if desired... but you don't need to... it should work this way 'out of the box' after an install with "brew install bitcoin" ... I think this is the optimal way.
-        config.my_node = BitcoinNodeHelper()
-    except Exception as e:
-        config.my_node = None
-        logging.error(f"ERROR: could not create instance of BitcoinNodeHelper - can't pull data from a node!\n{e}", exc_info=True)
-    logging.debug(f"{config.my_node=}")
-
+    pin.pin[PIN_HEIGHT] = tip
 
 
 def load_network_state() -> None:
@@ -91,38 +60,38 @@ def load_network_state() -> None:
     pin.pin[PIN_WATTAGE] = 3000
     pin.pin[PIN_HASHRATE] = 90
 
-    if config.my_node == None:
+    if node == None:
         pin.pin[PIN_HEIGHT] = bitcoin_height()
         pin.pin[PIN_NETWORKDIFFICULTY] = bitcoin_difficulty()
     else:
-        pin.pin[PIN_HEIGHT] = config.my_node.blockchain_state.block_height
-        pin.pin[PIN_NETWORKDIFFICULTY] = config.my_node.blockchain_state.difficulty
+        # pin.pin[PIN_HEIGHT] = config.node.blockchain_state.block_height
+        # pin.pin[PIN_NETWORKDIFFICULTY] = config.node.blockchain_state.difficulty
+        pin.pin[PIN_HEIGHT] = config.node.getblockheight()
+        pin.pin[PIN_NETWORKDIFFICULTY] = config.node.getdifficulty()
 
     callbacks.update_timestamp()
     callbacks.update_numbers() # this is the callback function used to ensure all UI read_only fields are updated
 
     with output.use_scope("TOP"):
         if config.my_node == None:
-            output.put_button("NO NODE SETUP - CLICK HERE TO RESOLVE", onclick=resolve_node_issue, color='danger')
+            output.put_button("NO NODE SETUP - CLICK HERE TO RESOLVE", onclick=None, color='danger')
         else:
             if config.my_node.pruned_height != 0: # IS PRUNED
-                output.put_button("PRUNED NODE RUNNING - CLICK TO VIEW STATUS", onclick=view_node_stats, color='info')
+                output.put_button("PRUNED NODE RUNNING - CLICK TO VIEW STATUS", onclick=None, color='info')
                 ph = config.my_node.pruned_height
                 output.put_text(f"Node is pruned to height: {ph} : ({datetime.datetime.fromtimestamp(config.my_node.get_block_time(ph))})")
             else:
-                output.put_button("NODE RUNNING - CLICK TO VIEW STATUS", onclick=view_node_stats, color='success')
+                output.put_button("NODE RUNNING - CLICK TO VIEW STATUS", onclick=None, color='success')
 
     output.toast("refresh done", color='success')
 
 
-def trythis(throwaway):
-    if throwaway == None:
-        pin.pin['test'] = 0
+# def trythis(throwaway):
+#     if throwaway == None:
+#         pin.pin['test'] = 0
 
-
-def save_all_vars(vars: dict) -> None:
-    logging.debug(f"save_all_vars({vars=})")
-
+# def save_all_vars(vars: dict) -> None:
+#     logging.debug(f"save_all_vars({vars=})")
 
 ####################################
 @output.use_scope('main', clear=True)
@@ -148,7 +117,6 @@ def show_interface():
     pin.pin_on_change(name=PIN_NETWORKDIFFICULTY, onchange=callbacks.update_numbers)
 
 
-
     output.put_markdown("### CAPTIAL EXPENDITURE - UPFRONT COST")
     output.put_collapse("Mining Hardware upfront cost", content=[
         output.put_table(tdata=[[
@@ -166,7 +134,6 @@ def show_interface():
             pin.put_input(name=PIN_INFRA_OPCOST, type='float', label="Opportunity cost", value=0)
         ]])
     ], open=True)
-
 
 
     output.put_markdown("### CAPITAL EXPENDITURE - FINANCING")
@@ -195,7 +162,6 @@ def show_interface():
     pin.pin_on_change(PIN_INFRA_LOAN_REPAYMENT, onchange=callbacks.update_financing)
 
 
-
     #pin.put_input(PIN_HASHEXPENSE, type='text', label='hash expense', value=0, readonly = True, help_text='your cost-of-production per Terahash per day'),
     output.put_markdown("### OPERATIONAL EXPENDITURE - OPEX")
     output.put_table([[
@@ -210,7 +176,6 @@ def show_interface():
     pin.pin_on_change(PIN_KWH_RATE, onchange=callbacks.update_numbers)
     pin.pin_on_change(PIN_POOLFEE, onchange=callbacks.update_numbers)
     pin.pin_on_change(PIN_OPEX, onchange=callbacks.update_numbers)
-
 
 
     output.put_markdown("### TAXES")
@@ -232,7 +197,6 @@ def show_interface():
     # pin.pin_on_change(PIN_RESELL, onchange=callbacks.update_numbers)
 
 
-
     output.put_markdown("### MINING MACHINE SPECIFICATIONS")
     output.put_table([[
         pin.put_input(name=PIN_WATTAGE, type='float', label="Total wattage of miners"),
@@ -243,14 +207,12 @@ def show_interface():
     pin.pin_on_change(name=PIN_HASHRATE, onchange=callbacks.update_numbers)
 
 
-
     output.put_markdown("### PROJECTION PARAMETERS")
     output.put_table([[
         pin.put_input(name=PIN_MONTHSTOPROJECT, type='float', value=DEFAULT_MONTHSTOPROJECT, label='Months to simulate: #'),
         pin.put_input(name=PIN_DIFFADJUST, type='float', value=DEFAULT_DIFFADJUST, label='Difficult adjustment: %'),
         pin.put_input(name=PIN_CASH, type='float', value=0, label='Cash on hand: $')
     ]])
-
 
     output.put_button( 'Simulate!', onclick=show_projection, color='success' )
 

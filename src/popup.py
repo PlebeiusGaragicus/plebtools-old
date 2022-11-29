@@ -2,8 +2,6 @@ import threading
 
 from pywebio import output, pin
 
-# import config
-# from constants import *
 
 #########################################################################
 # shamelessly stolen from here and modified

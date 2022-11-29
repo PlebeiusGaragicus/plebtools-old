@@ -3,11 +3,28 @@ import datetime
 
 from pywebio import output, pin
 
-from . import config
+from .config import *
 from .constants import *
 
-# from OSINTofBlockchain.Apps import get_input
+from src.api.coinbase import bitcoin_price_history
 
+from src.calcs import *
+
+
+def get_input(PIN_name: str, t: type, min_accepted_value: float = 0.0):
+    try:
+        ret = pin.pin[ PIN_name ]
+        if ret == None:
+            return t ( 0.0 )
+        else:
+            ret = t( ret )
+    except TypeError:
+        logging.error(f"{ PIN_name } unable to type-cast to { t } - this error should never happen", exc_info=True)
+        return None
+
+    if ret < min_accepted_value:
+        return min_accepted_value
+    return ret
 
 
 def update_price() -> None:
@@ -16,7 +33,7 @@ def update_price() -> None:
         This function essentially takes the entered height, queries coinbase for the price, and updates the PIN_PRICE field
     """
     # this feature is only available when running a node
-    if config.my_node != None:
+    if node == None:
         return
 
     h = get_input(PIN_HEIGHT, int)
@@ -29,23 +46,23 @@ def update_price() -> None:
         return
 
     # a height in the future
-    if h > config.my_node.blockchain_state.block_height:
+    if h > node.blockchain_state.block_height:
         return
 
     # TODO - shouldn't even a pruned node have all the headers..?  and isn't the unix time in that header?  We should be able to use a pruned node here... right??!?!??
     # on second thought... just say no to pruned nodes, kids.
     #if config.pruned and h < config.pruned_height:
-    # if h < config.my_node.pruned_height:
+    # if h < node.pruned_height:
     #     logging.debug("This node is pruned and that block is not in memory...")
     #     return
 
     logging.debug(f"update_price {h=}")
 
-    unix = config.my_node.get_block_time(h)
+    unix = node.get_block_time(h)
     if unix == None: #pruned node.. or, we just don't have the data for that height
         return
 
-    p = coinbase_API.coinbase_fetch_price_history(unix, unix+86400)
+    p = bitcoin_price_history(unix, unix+86400)
     try:
         price = (p['open'][0] + p['close'][0]) / 2
         logging.debug(f"{price=}")
@@ -63,19 +80,19 @@ def update_price() -> None:
 def update_timestamp() -> None:
     # this feature only works if you have a node
     #if config.node_path == None and config.RPC_enabled == False:
-    if config.my_node == None:
+    if node == None:
         return
 
     h = get_input(PIN_HEIGHT, int)
 
     # if height is blank, return
     # or, if height is in the future, return
-    if (h == None) or (h > config.my_node.blockchain_state.block_height):
+    if (h == None) or (h > node.blockchain_state.block_height):
         pin.pin_update(PIN_HEIGHT, help_text='')
         return
 
     try:
-        t = config.my_node.get_block_time(h)
+        t = node.get_block_time(h)
         #t = node.get_block_unix_time(h)
         t = datetime.datetime.fromtimestamp(t).isoformat(sep=' ', timespec='seconds')
 
@@ -90,18 +107,18 @@ def update_timestamp() -> None:
 #################################
 def update_difficulty() -> None:
     # this feature only works if you have a node
-    if config.my_node == None:
+    if node == None:
         logging.debug("no node enabled; update_difficulty() returning")
         return
 
     h = get_input(PIN_HEIGHT, int)
 
-    if (h == None) or (h > config.my_node.blockchain_state.block_height):
+    if (h == None) or (h > node.blockchain_state.block_height):
         return
 
     try:
-        bh = config.my_node.run(method='getblockhash', params=[h])
-        diff = config.my_node.run(method='getblockheader', params=[bh, ['difficulty']])
+        bh = node.run(method='getblockhash', params=[h])
+        diff = node.run(method='getblockheader', params=[bh, ['difficulty']])
 
         if diff == None:
             return
@@ -291,7 +308,7 @@ def update_height( height ) -> None:
 
     # only try to update the price if we're going at least one day back
     #if h < (config.height - 144):
-    if h < config.my_node.blockchain_state.block_height:
+    if h < node.blockchain_state.block_height:
         output.toast("Using historical data")
         update_price()
 
