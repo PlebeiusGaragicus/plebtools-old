@@ -4,51 +4,47 @@ import json
 import pywebio
 from pywebio import output, pin
 
-from . import config
-from .callbacks import *
+from src import settings
 
+APP_TITLE = "PlebTool Settings"
 
-def save_settings():
-    """Save settings to file"""
-    with open(config.SETTINGS_FILE, 'w') as f:
-        json.dump(config.settings, f, indent=4)
-
-def load_settings():
-    """Load settings from file"""
-    try:
-        with open(config.SETTINGS_FILE, 'r') as f:
-            config.settings = json.load(f)
-    except FileNotFoundError:
-        logging.warning("No settings file found, creating a new blank one")
-        config.settings = config.default_settings
-        save_settings()
+def update_inputs():
+    pin.pin_update(name='RPC_USER', value=settings.settings_json['RPC_USER'])
+    pin.pin_update(name='RPC_PASS', value=settings.settings_json['RPC_PASS'])
+    pin.pin_update(name='RPC_HOST', value=settings.settings_json['RPC_HOST'])
+    pin.pin_update(name='RPC_PORT', value=settings.settings_json['RPC_PORT'])
+    pin.pin_update(name='BRAIINS_TOKEN', value=settings.settings_json['BRAIINS_TOKEN'])
+    pin.pin_update(name='TWILIO_SID', value=settings.settings_json['TWILIO_SID'])
+    pin.pin_update(name='TWILIO_TOKEN', value=settings.settings_json['TWILIO_TOKEN'])
+    pin.pin_update(name='TWILIO_PHONE_NUMBER', value=settings.settings_json['TWILIO_PHONE_NUMBER'])
+    pin.pin_update(name='NOTIFY_PHONE_NUMBER', value=settings.settings_json['NOTIFY_PHONE_NUMBER'])
+    pin.pin_update(name='ADAFRUIT_USERNAME', value=settings.settings_json['ADAFRUIT_USERNAME'])
+    pin.pin_update(name='ADAFRUIT_APITOKEN', value=settings.settings_json['ADAFRUIT_APITOKEN'])
 
 
 def save_inputs():
-    """Save inputs to settings"""
-    config.settings['RPC_USER'] = pin.pin['RPC_USER']
-    config.settings['RPC_PASS'] = pin.pin['RPC_PASS']
-    config.settings['RPC_HOST'] = pin.pin['RPC_HOST']
-    config.settings['RPC_PORT'] = pin.pin['RPC_PORT']
+    settings.settings_json['RPC_USER'] = pin.pin['RPC_USER']
+    settings.settings_json['RPC_PASS'] = pin.pin['RPC_PASS']
+    settings.settings_json['RPC_HOST'] = pin.pin['RPC_HOST']
+    settings.settings_json['RPC_PORT'] = pin.pin['RPC_PORT']
 
-    config.settings['BRAIINS_TOKEN'] = pin.pin['BRAIINS_TOKEN']
+    settings.settings_json['BRAIINS_TOKEN'] = pin.pin['BRAIINS_TOKEN']
 
-    config.settings['TWILIO_SID'] = pin.pin['TWILIO_SID']
-    config.settings['TWILIO_TOKEN'] = pin.pin['TWILIO_TOKEN']
-    config.settings['TWILIO_PHONE_NUMBER'] = pin.pin['TWILIO_PHONE_NUMBER']
-    config.settings['NOTIFY_PHONE_NUMBER'] = pin.pin['NOTIFY_PHONE_NUMBER']
+    settings.settings_json['TWILIO_SID'] = pin.pin['TWILIO_SID']
+    settings.settings_json['TWILIO_TOKEN'] = pin.pin['TWILIO_TOKEN']
+    settings.settings_json['TWILIO_PHONE_NUMBER'] = pin.pin['TWILIO_PHONE_NUMBER']
+    settings.settings_json['NOTIFY_PHONE_NUMBER'] = pin.pin['NOTIFY_PHONE_NUMBER']
 
-    config.settings['ADAFRUIT_USERNAME'] = pin.pin['ADAFRUIT_USERNAME']
-    config.settings['ADAFRUIT_APITOKEN'] = pin.pin['ADAFRUIT_APITOKEN']
+    settings.settings_json['ADAFRUIT_USERNAME'] = pin.pin['ADAFRUIT_USERNAME']
+    settings.settings_json['ADAFRUIT_APITOKEN'] = pin.pin['ADAFRUIT_APITOKEN']
 
-    save_settings()
+    settings.save_settings()
 
-    output.toast("Settings saved")
 
-@pywebio.config(title=config.APP_TITLE, theme='dark')
+@pywebio.config(title=APP_TITLE, theme='dark')
 def main():
     with output.use_scope('main', clear=True):
-        output.put_markdown(f"# {config.APP_TITLE}")
+        output.put_markdown(f"# {APP_TITLE}")
 
         output.put_table(tdata=[[
             output.span([
@@ -91,26 +87,7 @@ def main():
             output.span(pin.put_input('ADAFRUIT_APITOKEN', type='text', label="Adafruit IO Key"), col=4)
         ]])
 
-        # output.put_table([[
-        #     output.span([
-        #         output.put_markdown("## Braiins Pool Token"),
-        #         output.put_text("Get this from the Braiins pool web interface.")
-        #     ], col=4)
-        # ],[
-        #     pin.put_input('BRAIINS_TOKEN', type='text', label="Braiins Pool Token")
-        # ]]).style('margin-top: 20px; justify-self: center;')
-
         output.put_button('Save', onclick=save_inputs, color="success")
 
-    load_settings()
-    pin.pin_update(name='RPC_USER', value=config.settings['RPC_USER'])
-    pin.pin_update(name='RPC_PASS', value=config.settings['RPC_PASS'])
-    pin.pin_update(name='RPC_HOST', value=config.settings['RPC_HOST'])
-    pin.pin_update(name='RPC_PORT', value=config.settings['RPC_PORT'])
-    pin.pin_update(name='BRAIINS_TOKEN', value=config.settings['BRAIINS_TOKEN'])
-    pin.pin_update(name='TWILIO_SID', value=config.settings['TWILIO_SID'])
-    pin.pin_update(name='TWILIO_TOKEN', value=config.settings['TWILIO_TOKEN'])
-    pin.pin_update(name='TWILIO_PHONE_NUMBER', value=config.settings['TWILIO_PHONE_NUMBER'])
-    pin.pin_update(name='NOTIFY_PHONE_NUMBER', value=config.settings['NOTIFY_PHONE_NUMBER'])
-    pin.pin_update(name='ADAFRUIT_USERNAME', value=config.settings['ADAFRUIT_USERNAME'])
-    pin.pin_update(name='ADAFRUIT_APITOKEN', value=config.settings['ADAFRUIT_APITOKEN'])
+    settings.load_settings()
+    update_inputs()

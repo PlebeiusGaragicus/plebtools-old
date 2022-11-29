@@ -3,9 +3,20 @@ from pywebio import output, config, session
 from .const import *
 from .callbacks import *
 
+from src import settings
+
 def cleanup( ):
     # TODO this doesn't work apparently... with the say we are running the sessions (??) look into this
     logging.debug("I HOPE THIS IS NOT GOOD-BYE FOREVER!!! <3 <3 <3")
+
+
+def load_from_settings():
+    settings.load_settings()
+
+    pin.pin_update(name=PIN_USERNAME, value=settings.settings_json['RPC_USER'])
+    pin.pin_update(name=PIN_PASSWORD, value=settings.settings_json['RPC_PASS'])
+    pin.pin_update(name=PIN_HOST, value=settings.settings_json['RPC_HOST'])
+    pin.pin_update(name=PIN_PORT, value=settings.settings_json['RPC_PORT'])
 
 @config(title=APP_TITLE, theme='dark')
 def main():
@@ -27,7 +38,7 @@ def main():
         ])
         pin.put_checkbox(name=PIN_USE_COOKIE, options=["Use cookie file"], label="", value=False)
         output.put_row([
-            pin.put_input(name=PIN_IPADDRESS, label="ip address", value=DEFAULT_NODE_IP_ADDRESS),
+            pin.put_input(name=PIN_HOST, label="ip address", value=DEFAULT_NODE_IP_ADDRESS),
             pin.put_input(name=PIN_PORT, label="port", value=DEFAULT_NODE_PORT)
         ])
         pin.pin_on_change(PIN_USE_COOKIE, use_cookie_callback)
@@ -43,3 +54,5 @@ def main():
             output.put_button("Format and run!", color='danger', onclick=lambda: add_command( run=True ))
         ])
         output.put_markdown(f"# Command history:")
+
+    load_from_settings()

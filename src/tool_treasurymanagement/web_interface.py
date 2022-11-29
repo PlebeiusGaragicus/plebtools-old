@@ -1,9 +1,6 @@
 # TODO - remember!!!! run(method={...}) should be in a try: block so that output.info_popup can be run for the user!!!
 
-import os
 import logging
-import datetime
-import dotenv
 
 from pywebio import output, pin, config
 
@@ -17,13 +14,17 @@ from .projection import show_projection
 from src.api.coinbase import spot_price
 from src.api.blockchaininfo import bitcoin_height, bitcoin_difficulty
 
+from src import settings
+
 APP_TITLE = "Treasury Management Simulator"
 
+
+
 def setup_node():
-    user = os.getenv('RPC_USER')
-    pswd = os.getenv('RPC_PASS')
-    host = os.getenv('RPC_HOST')
-    port = os.getenv('RPC_PORT')
+    user = settings.settings_json['RPC_USER']
+    pswd = settings.settings_json['RPC_PASS']
+    host = settings.settings_json['RPC_HOST']
+    port = settings.settings_json['RPC_PORT']
 
     rpc_url = f"http://{user}:{pswd}@{host}:{port}"
     logging.debug(f"{rpc_url=}")
@@ -32,6 +33,7 @@ def setup_node():
 
     try:
         tip = node.getblockcount()
+        pin.pin[PIN_HEIGHT] = tip
     except JSONRPCException as e:
         # TODO this isn't a small issue... allow the user to resolve.. or give better resolution details (go to settings and fix)
         output.toast(f"ERROR: {e}", color='error', duration=10)
@@ -39,7 +41,6 @@ def setup_node():
         node = None
         return
 
-    pin.pin[PIN_HEIGHT] = tip
 
 
 def load_network_state() -> None:
@@ -92,7 +93,9 @@ def load_network_state() -> None:
 # def save_all_vars(vars: dict) -> None:
 #     logging.debug(f"save_all_vars({vars=})")
 
-####################################
+
+
+
 @output.use_scope('main', clear=True)
 def show_interface():
 
@@ -217,10 +220,12 @@ def show_interface():
 
     load_network_state()
 
+
+
 @config(title=APP_TITLE, theme='dark')
 def main():
 
-    dotenv.load_dotenv()
+    settings.load_settings()
 
     setup_node()
 

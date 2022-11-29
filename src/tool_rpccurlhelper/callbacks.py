@@ -21,7 +21,7 @@ def generate_command():
         output.toast("Please enter a username and password", color='danger')
         return
 
-    ip_address = str( pin.pin[PIN_IPADDRESS] )
+    ip_address = str( pin.pin[PIN_HOST] )
     port = str( pin.pin[PIN_PORT] )
 
     if "" in (ip_address, port):
