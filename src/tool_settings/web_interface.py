@@ -4,45 +4,64 @@ import json
 import pywebio
 from pywebio import output, pin
 
-from src import settings
+from src.settings import AppSettings
 
 APP_TITLE = "PlebTool Settings"
 
+settings: AppSettings = None
+
+
+
 def update_inputs():
-    pin.pin_update(name='RPC_USER', value=settings.settings_json['RPC_USER'])
-    pin.pin_update(name='RPC_PASS', value=settings.settings_json['RPC_PASS'])
-    pin.pin_update(name='RPC_HOST', value=settings.settings_json['RPC_HOST'])
-    pin.pin_update(name='RPC_PORT', value=settings.settings_json['RPC_PORT'])
-    pin.pin_update(name='BRAIINS_TOKEN', value=settings.settings_json['BRAIINS_TOKEN'])
-    pin.pin_update(name='TWILIO_SID', value=settings.settings_json['TWILIO_SID'])
-    pin.pin_update(name='TWILIO_TOKEN', value=settings.settings_json['TWILIO_TOKEN'])
-    pin.pin_update(name='TWILIO_PHONE_NUMBER', value=settings.settings_json['TWILIO_PHONE_NUMBER'])
-    pin.pin_update(name='NOTIFY_PHONE_NUMBER', value=settings.settings_json['NOTIFY_PHONE_NUMBER'])
-    pin.pin_update(name='ADAFRUIT_USERNAME', value=settings.settings_json['ADAFRUIT_USERNAME'])
-    pin.pin_update(name='ADAFRUIT_APITOKEN', value=settings.settings_json['ADAFRUIT_APITOKEN'])
+    """
+        Update the inputs with the current settings
+    """
+
+    global settings
+
+    pin.pin_update(name='RPC_USER', value=settings['RPC_USER'])
+    pin.pin_update(name='RPC_PASS', value=settings['RPC_PASS'])
+    pin.pin_update(name='RPC_HOST', value=settings['RPC_HOST'])
+    pin.pin_update(name='RPC_PORT', value=settings['RPC_PORT'])
+    pin.pin_update(name='BRAIINS_TOKEN', value=settings['BRAIINS_TOKEN'])
+    pin.pin_update(name='TWILIO_SID', value=settings['TWILIO_SID'])
+    pin.pin_update(name='TWILIO_TOKEN', value=settings['TWILIO_TOKEN'])
+    pin.pin_update(name='TWILIO_PHONE_NUMBER', value=settings['TWILIO_PHONE_NUMBER'])
+    pin.pin_update(name='NOTIFY_PHONE_NUMBER', value=settings['NOTIFY_PHONE_NUMBER'])
+    pin.pin_update(name='ADAFRUIT_USERNAME', value=settings['ADAFRUIT_USERNAME'])
+    pin.pin_update(name='ADAFRUIT_APITOKEN', value=settings['ADAFRUIT_APITOKEN'])
 
 
 def save_inputs():
-    settings.settings_json['RPC_USER'] = pin.pin['RPC_USER']
-    settings.settings_json['RPC_PASS'] = pin.pin['RPC_PASS']
-    settings.settings_json['RPC_HOST'] = pin.pin['RPC_HOST']
-    settings.settings_json['RPC_PORT'] = pin.pin['RPC_PORT']
+    """
+        Update the settings based on user input and save them to file
 
-    settings.settings_json['BRAIINS_TOKEN'] = pin.pin['BRAIINS_TOKEN']
+    """
+    global settings
 
-    settings.settings_json['TWILIO_SID'] = pin.pin['TWILIO_SID']
-    settings.settings_json['TWILIO_TOKEN'] = pin.pin['TWILIO_TOKEN']
-    settings.settings_json['TWILIO_PHONE_NUMBER'] = pin.pin['TWILIO_PHONE_NUMBER']
-    settings.settings_json['NOTIFY_PHONE_NUMBER'] = pin.pin['NOTIFY_PHONE_NUMBER']
+    settings['RPC_USER'] = pin.pin['RPC_USER']
+    settings['RPC_PASS'] = pin.pin['RPC_PASS']
+    settings['RPC_HOST'] = pin.pin['RPC_HOST']
+    settings['RPC_PORT'] = pin.pin['RPC_PORT']
 
-    settings.settings_json['ADAFRUIT_USERNAME'] = pin.pin['ADAFRUIT_USERNAME']
-    settings.settings_json['ADAFRUIT_APITOKEN'] = pin.pin['ADAFRUIT_APITOKEN']
+    settings['BRAIINS_TOKEN'] = pin.pin['BRAIINS_TOKEN']
+
+    settings['TWILIO_SID'] = pin.pin['TWILIO_SID']
+    settings['TWILIO_TOKEN'] = pin.pin['TWILIO_TOKEN']
+    settings['TWILIO_PHONE_NUMBER'] = pin.pin['TWILIO_PHONE_NUMBER']
+    settings['NOTIFY_PHONE_NUMBER'] = pin.pin['NOTIFY_PHONE_NUMBER']
+
+    settings['ADAFRUIT_USERNAME'] = pin.pin['ADAFRUIT_USERNAME']
+    settings['ADAFRUIT_APITOKEN'] = pin.pin['ADAFRUIT_APITOKEN']
 
     settings.save_settings()
 
 
 @pywebio.config(title=APP_TITLE, theme='dark')
 def main():
+    global settings
+    settings = AppSettings()
+
     with output.use_scope('main', clear=True):
         output.put_markdown(f"# {APP_TITLE}")
 
@@ -89,5 +108,4 @@ def main():
 
         output.put_button('Save', onclick=save_inputs, color="success")
 
-    settings.load_settings()
     update_inputs()

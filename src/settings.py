@@ -52,3 +52,6 @@ class AppSettings:
 
     def __getitem__(self, key):
         return self._settings_json[key]
+
+    def __setitem__(self, key, value):
+        self._settings_json[key] = value

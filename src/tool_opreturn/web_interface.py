@@ -186,20 +186,29 @@ def main():
     with output.use_scope('main', clear=True):
         output.put_markdown(f"# {APP_TITLE}")
 
-        output.put_row(
-            [
-                pin.put_input(name='height',label='',type='number',value='', placeholder='Enter Block Height'),
-                output.put_button('Get OP_RETURN data', onclick=show_opreturns)
-            ])
         output.put_table([
             [
+                output.span(
+                    pin.put_input(name='height',label='Block height:',type='number',value='', placeholder='Enter Block Height'),
+                    col=3
+                )
+            ],[
+                output.span(
+                    output.put_button('Get OP_RETURN data', onclick=show_opreturns),
+                    col=3)
+            ],[
                     output.put_button('Prev', disabled=pin.pin['height'] == 0, onclick=prev),
                     output.put_button("Use latest", onclick=use_latest),
                     output.put_button('Next', onclick=next)
+            ],[
+                output.span(
+                    output.put_collapse(title='Encoding options', content=[
+                        pin.put_checkbox('encoding', options=["utf-8","ascii"], value=["utf-8","ascii"], inline=True)
+                    ], open=False),
+                    col=3)
             ]
-        ])
-        output.put_collapse(title='Encoding options', content=[
-            pin.put_checkbox('encoding', options=["utf-8","ascii"], value=["utf-8","ascii"], inline=True)
-        ], open=False)
+            # TODO: I can't get this fucking style thing to work!!! WTF!?!?!?
+        ]).style("align-items: center; justify-content: center;")
+
 
     pin.pin_update('height', value=tip)
