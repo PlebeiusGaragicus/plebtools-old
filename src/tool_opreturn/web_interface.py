@@ -11,6 +11,9 @@ from src.settings import AppSettings
 
 APP_TITLE = "OP_RETURN Reader"
 
+# TODO work on this
+APP_DESCRIPTION = "This tool will parse a given block height for OP_RETURN data with a given encoding.  Not all blocks have OP_RETURN and some that do aren't able to be decoded."
+
 appsettings: AppSettings = None
 
 # Note: we don't use a global connection anymore because it will time out or otherwise have a bunch of errors happen when the user pauses for as little as 30 seconds
@@ -144,7 +147,7 @@ def do_work():
                                 optext = opbytes.decode(encoding)
                                 hasError = False
                                 logging.debug(optext)
-                                output.put_markdown(f"# OP_RETURN:")
+                                output.put_markdown(f"---\n# OP_RETURN:")
                                 output.put_markdown(f"### {optext}")
                                 output.put_collapse(title="details", content=[
                                     output.put_markdown(f"## Encoding used: {encoding}"),
@@ -185,6 +188,9 @@ def main():
 
     with output.use_scope('main', clear=True):
         output.put_markdown(f"# {APP_TITLE}")
+        output.put_text(APP_DESCRIPTION)
+        output.put_link(name='Return to main menu', url="./")
+        output.put_markdown("---")
 
         output.put_table([
             [
