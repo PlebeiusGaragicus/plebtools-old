@@ -3,14 +3,28 @@ import json
 import time
 import logging
 
-from src.api.authproxy import AuthServiceProxy
+from src.api.authproxy import JSONRPCException
+from src.node import return_AuthProxy
 
-from src import tool_settings
+SLEEP_TIME = 10.0
+
+
 
 def respond_to_client():
-    # latest_hash = 
+    rpc_connection = return_AuthProxy()
+
+    try:
+        tip = rpc_connection.getblockcount()
+    except JSONRPCException as e:
+        logging.error(f"Error connecting to node: {e}")
+        _data = json.dumps({"error":e.message})
+        yield f"id: 1\ndata: {_data}\nevent: message\n\n"
+        return
+
     while True:
 
-        _data = json.dumps({"height":counter})
+        _data = json.dumps({"height":tip})
         yield f"id: 1\ndata: {_data}\nevent: online\n\n"
-        time.sleep(1.0)
+        
+        time.sleep( SLEEP_TIME )
+        tip = rpc_connection.getblockcount()

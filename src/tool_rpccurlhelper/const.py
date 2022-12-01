@@ -1,8 +1,11 @@
 APP_TITLE = "bitcoin-cli RPC curl Formatter"
 
-TOP_TEXT = """
+APP_DESCRIPTION = """
+This tool will format a curl command for you to use with bitcoin-cli.  It will also run the command for you if you want.  It will load your authentication settings for you so you don't have to enter them every time.
+
+Note: This is for Bitcoin Core version x.x.x - FYI... Changes to bitcoin core may not be reflected here
+
 """
-# Note: This is for Bitcoin Core version x.x.x - FYI... Changes to bitcoin core may not be reflected here
 
 DEFAULT_NODE_IP_ADDRESS = '127.0.0.1'
 DEFAULT_NODE_PORT = '8332'

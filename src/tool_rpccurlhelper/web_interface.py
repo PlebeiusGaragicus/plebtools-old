@@ -3,7 +3,7 @@ from pywebio import output, config, session
 from .const import *
 from .callbacks import *
 
-from src import settings
+from src.settings import AppSettings
 
 def cleanup( ):
     # TODO this doesn't work apparently... with the say we are running the sessions (??) look into this
@@ -11,25 +11,27 @@ def cleanup( ):
 
 
 def load_from_settings():
-    settings.load_settings()
+    appsettings = AppSettings()
 
-    pin.pin_update(name=PIN_USERNAME, value=settings.settings_json['RPC_USER'])
-    pin.pin_update(name=PIN_PASSWORD, value=settings.settings_json['RPC_PASS'])
-    pin.pin_update(name=PIN_HOST, value=settings.settings_json['RPC_HOST'])
-    pin.pin_update(name=PIN_PORT, value=settings.settings_json['RPC_PORT'])
+    pin.pin_update(name=PIN_USERNAME, value=appsettings['RPC_USER'])
+    pin.pin_update(name=PIN_PASSWORD, value=appsettings['RPC_PASS'])
+    pin.pin_update(name=PIN_HOST, value=appsettings['RPC_HOST'])
+    pin.pin_update(name=PIN_PORT, value=appsettings['RPC_PORT'])
 
 @config(title=APP_TITLE, theme='dark')
 def main():
     logging.debug("\n>>>> Starting app: bitcoin-cli RPC curl formatter !!!!!!!!!!!!!")
     session.defer_call(cleanup) # TODO this does not work with thread-based something sessions something something
-    # output.clear('app')
+
+
     with output.use_scope('main', clear=True):
-        # output.put_button("<<- Main Menu", color='danger', onclick=lambda: cleanup(menu_callback))
+        output.put_link(name='Return to main menu', url="./")
+        output.put_markdown("---")
         output.put_markdown(f"# {APP_TITLE}")
         # doing it this way will open the link in a new tab
         # output.put_link() # TODO use this function instead...
+        output.put_markdown(APP_DESCRIPTION)
         output.put_html(f"""Refer to the official <a href="https://developer.bitcoin.org/reference/rpc/" target="_blank">RPC API Reference</a> for more information""")
-        output.put_markdown(TOP_TEXT)
         output.put_markdown("---")
 
         output.put_row([

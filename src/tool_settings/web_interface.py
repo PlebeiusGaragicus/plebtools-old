@@ -63,7 +63,11 @@ def main():
     settings = AppSettings()
 
     with output.use_scope('main', clear=True):
+        output.put_link(name='Return to main menu', url="./")
+        output.put_markdown("---")
         output.put_markdown(f"# {APP_TITLE}")
+        # output.put_text(APP_DESCRIPTION)
+        # output.put_markdown("---")
 
         output.put_table(tdata=[[
             output.span([

@@ -32,13 +32,10 @@ app = Flask(__name__, static_folder='../web/static', template_folder='../web/tem
 def index():
     return render_template("index.html", title=config.APP_TITLE)
 
-# @app.route("/clock")
-# def clock():
-#     return render_template("clock.html", title=config.APP_TITLE, tip=69.69)
 
 @app.route("/clock")
 def clock():
-    return render_template("clock1.html")
+    return render_template("clock.html")
 
 
 @app.route("/listen")

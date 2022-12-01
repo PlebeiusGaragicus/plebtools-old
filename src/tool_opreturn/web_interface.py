@@ -5,6 +5,7 @@ from pywebio import output, pin, config
 
 from src.api.authproxy import AuthServiceProxy, JSONRPCException, CustomJsonEncoder
 from src.settings import AppSettings
+from src.node import return_AuthProxy, verify_node
 
 ####################################
 # GLOBALS
@@ -14,7 +15,7 @@ APP_TITLE = "OP_RETURN Reader"
 # TODO work on this
 APP_DESCRIPTION = "This tool will parse a given block height for OP_RETURN data with a given encoding.  Not all blocks have OP_RETURN and some that do aren't able to be decoded."
 
-appsettings: AppSettings = None
+# appsettings: AppSettings = None
 
 # Note: we don't use a global connection anymore because it will time out or otherwise have a bunch of errors happen when the user pauses for as little as 30 seconds
 # rpc_connection: AuthServiceProxy = None
@@ -57,17 +58,7 @@ def show_opreturns():
 
 
 
-def return_AuthProxy() -> AuthServiceProxy:
-    global appsettings
-    user = appsettings['RPC_USER']
-    pswd = appsettings['RPC_PASS']
-    host = appsettings['RPC_HOST']
-    port = appsettings['RPC_PORT']
 
-    rpc_url = f"http://{user}:{pswd}@{host}:{port}"
-    logging.debug(f"{rpc_url=}")
-
-    return AuthServiceProxy(rpc_url)
 
 
 @output.use_scope('opreturns')
@@ -76,20 +67,12 @@ def do_work():
         - connects to node and gets the block
     """
 
-
+    # there's no performance concern here... just load the settings file each time - no big deal
     rpc_connection = return_AuthProxy()
 
     # Note: shouln't need this because we verify node settings and connection when the app starts
+    # but this could happen if the settings.json file was edited after the app started (which shouldn't happen esp. if loaded on an Embassy...)
     # if rpc_connection == None:
-    #     return
-
-
-    # NOTE: I shouldn't need this anymore becuase app will verify node connection at startup
-    # try:
-    #     tip = rpc_connection.getblockcount()
-    # except JSONRPCException as e:
-    #     output.toast(f"ERROR: {e}", color='error', duration=10)
-    #     output.toast(f"Check your RPC connection settings", color='warn', duration=10)
     #     return
 
     global tip
@@ -165,31 +148,17 @@ def do_work():
 @config(title=APP_TITLE, theme='dark')
 def main():
 
-    global appsettings
-    appsettings = AppSettings()
-
-    rpc_connection = return_AuthProxy()
-
-    try:
-        info = rpc_connection.getblockchaininfo()
-
-        global tip
-        tip = rpc_connection.getblockcount()
-
-        output.toast(f"Node connected - working on {info['chain']} chain")
-    except JSONRPCException as e:
-        logging.error(f"Error connecting to node: {e}")
-        output.toast("ERROR: Cannot connect to node!", color='error', duration=4)
-        output.put_markdown("# Uh oh - cannot connect to node!")
-        output.put_text("I can't connect to a bitcoin node.  Make sure the node is running.  Also double check your that bitcoind RPC credentials are correct in settings...")
-        output.put_link(name='Open settings', url="./settings")
+    global tip
+    tip = verify_node()
+    if tip == None:
         return
 
 
     with output.use_scope('main', clear=True):
+        output.put_link(name='Return to main menu', url="./")
+        output.put_markdown("---")
         output.put_markdown(f"# {APP_TITLE}")
         output.put_text(APP_DESCRIPTION)
-        output.put_link(name='Return to main menu', url="./")
         output.put_markdown("---")
 
         output.put_table([
