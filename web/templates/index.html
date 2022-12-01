@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+  body {
+    background-color: #140f2a;
+  }
+  h1 {
+    margin-top: 2rem;
+    text-align:center;
+    color: rgb(124, 186, 239);
+  }
+  h5 {
+    margin-top: 1rem;
+  }
+  .row {
+    display: flex;
+    color: rgb(213, 191, 191);
+    margin-left: 20px;
+    margin-right: 20px;
+    justify-content: center;
+  }
+  .card {
+    flex-grow: row wrap;
+    background-color: #231855;
+    width: 18rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+  }
+</style>
+
+<!-- TOOLS -->
+<!-- <h1 style=>Tools:</h1>
+<div class="row">
+</div> -->
+
+<!-- UTILITIES -->
+<h1>Utilities:</h1>
+<div class="row">
+  <div class="card"">
+    <h5 class="card-title">bitcoin-cli curl formatter</h5>
+      <img src="/static/curlformatter.png" class="card-img-top">
+      <div class="card-body">
+        <!-- <p class="card-text">This tool helps your properly format a curl command for bitcoind.</p> -->
+        <a href="/curl_formatter" class="btn btn-primary">Launch tool</a>
+      </div>
+    </div>
+    <div class="card"">
+      <h5 class="card-title">Currency converter</h5>
+        <img src="/static/currencyconvert.png" class="card-img-top">
+        <div class="card-body">
+          <a href="/currency_converter" class="btn btn-primary">Launch tool</a>
+        </div>
+      </div>
+      <!-- <div class="card"">
+        <h5 class="card-title">Blockstream Satellite</h5>
+        <img src="/static/stub.png" class="card-img-top">
+        <div class="card-body">
+          <a href="/blockstreamsat" class="btn btn-primary">Launch tool</a>
+        </div>
+      </div>
+      <div class="card"">
+        <h5 class="card-title">command line</h5>
+        <img src="/static/stub.png" class="card-img-top">
+        <div class="card-body">
+          <a href="/terminal" class="btn btn-primary">Launch tool</a>
+        </div>
+      </div> -->
+    </div>
+
+<!-- BITCOIN MINING -->
+<h1>Bitcoin mining:</h1>
+<div class="row">
+      <div class="card"">
+        <h5 class="card-title">Mining profitability calculator</h5>
+        <img src="/static/miningcalcs.png" class="card-img-top">
+        <div class="card-body">
+          <a href="/mining_calcs" class="btn btn-primary">Launch tool</a>
+        </div>
+      </div>
+      <!-- <div class="card"">
+        <h5 class="card-title">Mining Treasury Management</h5>
+        <img src="/static/stub.png" class="card-img-top">
+        <div class="card-body">
+          <a href="/treasurymanagement" class="btn btn-primary">Launch tool</a>
+        </div>
+      </div>
+      <div class="card"">
+        <h5 class="card-title">BraiinsPool API</h5>
+        <img src="/static/braiinspool.png" class="card-img-top">
+        <div class="card-body">
+          <a href="/braiinspool" class="btn btn-primary">Launch tool</a>
+        </div>
+      </div> -->
+    </div>
+
+<!-- BLOCKCHAIN ANALYSIS -->
+<h1>Blockchain analysis:</h1>
+<div class="row">
+  <!-- <div class="card">
+    <h4 class="card-title">Bitcoin stats dashboard</h5>
+      <img src="/static/stub.png" class="card-img-top">
+      <div class="card-body">
+        <a href="/dashboard" class="btn btn-primary">Launch tool</a>
+      </div>
+    </div>
+  <div class="card">
+    <h4 class="card-title">Historical analysis</h5>
+      <img src="/static/stub.png" class="card-img-top">
+      <div class="card-body">
+        <a href="/historicalanalysis" class="btn btn-primary">Launch tool</a>
+      </div>
+    </div> -->
+    <div class="card"">
+      <h5 class="card-title">OP_RETURN reader</h5>
+      <img src="/static/opreturn.png" class="card-img-top">
+      <div class="card-body">
+        <a href="/opreturn" class="btn btn-primary">Launch tool</a>
+      </div>
+    </div>
+</div>
+
+
+<!-- SIDE-LOADING: -->
+<!-- <h1>Side-loading:</h1>
+<div class="row">
+    <div class="card"">
+      <h5 class="card-title">Service side-loader:</h5>
+      <img src="/static/stub.png" class="card-img-top">
+      <div class="card-body">
+        <a href="/sideloader" class="btn btn-primary">Launch tool</a>
+      </div>
+    </div>
+</div> -->
+
+<br>
+
+      
+      {% endblock %}
+      

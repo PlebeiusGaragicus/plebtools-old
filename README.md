@@ -31,6 +31,42 @@ Scan any bitcoin block for OP_RETURN messages.  Inspired by [nodeyez](https://gi
 
 ![OP_RETURN reader screenshot](src/static/opreturn.png)
 
+## Bitcoin stats dashboard
+A dashboard for monitoring Bitcoin network stats.  Inspired by [clark moody](https://bitcoin.clarkmoody.com/dashboard/)
+
+## Bitcoin vanity address generator
+...
+
+## historical analysis
+...
+
+## currency converter
+Convert between fiat currency and bitcoin.  Inspired by [bitcoin-convert](
+
+## braiins pool API
+...
+
+## bitcoin-cli RPC curl formatter
+...
+
+## Bitcoin mining profitability calculator
+[Braiins Insights](https://insights.braiins.com/en/profitability-calculator/) <-- the gold-standard
+
+[red dirt mining](https://reddirtmining.io/calculator) <-- brand-new, and open-source
+
+[Crypto compate](https://www.cryptocompare.com/mining/calculator/btc) <-- this one sucks
+
+## Bitcoin mining treasury management simulator
+...
+
+## terminal
+...
+
+# Tool Wish List:
+
+- https://github.com/jlopp/xpub-converter
+- https://github.com/matja/bitcoin-tool
+
 
 ---
 

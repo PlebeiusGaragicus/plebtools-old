@@ -6,7 +6,7 @@ import urllib.request as ur
 
 """
 
-def query_blockchaininfo_bitcoin_height() -> int:
+def bitcoin_height() -> int:
     try:
         return int(ur.urlopen(ur.Request('https://blockchain.info/q/getblockcount')).read())
     except Exception as e:
@@ -14,7 +14,7 @@ def query_blockchaininfo_bitcoin_height() -> int:
         return None
 
 
-def query_blockchaininfo_bitcoin_difficulty() -> int:
+def bitcoin_difficulty() -> int:
     try:
         # why int(float()) ??? I don't remember...
         return int(float(ur.urlopen(ur.Request('https://blockchain.info/q/getdifficulty')).read()))
@@ -24,7 +24,7 @@ def query_blockchaininfo_bitcoin_difficulty() -> int:
 
 
 
-def query_blockchaininfo_bitcoin_networkhashrate() -> int:
+def bitcoin_networkhashrate() -> int:
     try:
         return int(ur.urlopen(ur.Request('https://blockchain.info/q/hashrate')).read()) / 1000
     except Exception as e:

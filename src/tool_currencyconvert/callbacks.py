@@ -26,7 +26,7 @@ def currency_converter():
 
     output.put_row(content=[
         output.put_column(content=[
-            pin.put_input("price", type="float", label="What is the current price of bitcoin?", value=0),
+            pin.put_input("price", type="float", label="Bitcoin price:", value=0),
             output.put_button("refresh price", onclick=updateprice)
             ]),
         output.put_column(content=[

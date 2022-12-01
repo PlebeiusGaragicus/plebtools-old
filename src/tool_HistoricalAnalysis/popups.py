@@ -5,6 +5,8 @@ from plotly.subplots import make_subplots
 
 from pywebio import pin, output
 
+from src.api.coinbase import spot_price
+
 
 
 def popup_price_history():
@@ -43,7 +45,7 @@ def popup_currencyconverter():
         This popup allows you to convert from fiat to bitcoin and back
     """
     def updateprice():
-        price_now = query_bitcoin_spot_price() # query_bitcoinprice()
+        price_now = spot_price() # query_bitcoinprice()
         pin.pin['convertprice'] = price_now
         return price_now
 
@@ -134,17 +136,8 @@ def popup_difficulty_history():
 
 
 def avgerage_block_fee(node: NodeHelper, nBlocks = EXPECTED_BLOCKS_PER_DAY) -> int:
-    """
-        This will return the average fee going back nBlocks using the bitcoin cli at the provided path
-
-    """
-
-    # I don't need this anymore
-    # if config.node_path == None:
-    #     return None
 
     blockheight = node.blockheight()
-    #blockheight = int(os.popen(f"{config.node_path} getblockcount").read())
 
     with output.popup(f"Averaging transactions fees for last {nBlocks} blocks...", closable=False) as p:
 

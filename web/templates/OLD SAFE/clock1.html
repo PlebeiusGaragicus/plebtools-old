@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <!-- required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootscrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+    <title>Block Clock</title>
+  </head>
+  <body>
+
+<h1>Welcome to Block Clock!</h1>
+
+<h2>the time is now:</h2>
+<!-- <div id="height">{{ tip_height }}</div>
+<div id="difficulty">{{ difficulty }}</div>
+<div id="block_time">{{ block_time }}</div>
+<div id="time_now">{{ time_now }}</div> -->
+<div id="height">height</div>
+<div id="difficulty">difficulty</div>
+<div id="block_time">block_time</div>
+<div id="time_now">time_now</div>
+
+<script>
+  var height = document.getElementById("height");
+  var difficulty = document.getElementById("difficulty");
+  var block_time = document.getElementById("block_time");
+  var time_now = document.getElementById("time_now");
+
+  var eventSource = new EventSource("/ticktocknewblock")
+  eventSource.onmessage = function(e) {
+    console.log(e.data)
+    // const ad = JSON.parse(e.data)
+    let ad = JSON.parse(e.data)
+    console.log(e.data['height'])
+    // height.innerHTML = ad.height;
+    // difficulty.innerHTML = e.data.difficulty;
+    // block_time.innerHTML = e.data.block_time;
+    // time_now.innerHTML = e.data.time_now;
+  };
+</script>
+
+  </body>
+</html>

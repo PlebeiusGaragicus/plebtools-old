@@ -76,6 +76,14 @@ def EncodeDecimal(o):
         return float(round(o, 8))
     raise TypeError(repr(o) + " is not JSON serializable")
 
+# I put this here... what is up with the function above this ^^ ??  Am I missing something?
+class CustomJsonEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        return super(CustomJsonEncoder, self).default(obj)
+
 class AuthServiceProxy(object):
     __id_count = 0
 

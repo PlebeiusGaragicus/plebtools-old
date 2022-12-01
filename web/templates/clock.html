@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+  body {
+    background-color: #140f2a;
+  }
+  h1 {
+    margin-top: 2rem;
+    text-align:center;
+    color: rgb(124, 186, 239);
+  }
+</style>
+
+
+<h1>The current time is:</h1>
+
+<div id="counter" style="font-size: 10vw; text-align:center; color: rgb(255,153,0);">-</div>
+<div id="error" style="font-size: 1rem; text-align:center; color: red;"></div>
+<div id="help" style="font-size: 1rem; text-align:center; color: rgb(42, 221, 36);"></div>
+
+<script>
+  var eventSource = new EventSource("/listen")
+  
+  eventSource.addEventListener("message", function(e) {
+    console.log(e.data)
+    error = JSON.parse(e.data)
+    document.querySelector("#error").innerText = error.error
+    if (error.error == "non-JSON HTTP response with '401 Unauthorized' from server") {
+      document.querySelector("#help").innerText = "Check your bitcoin RPC authentication settings"
+    }
+  }, false)
+
+  eventSource.addEventListener("online", function(e) {
+    data = JSON.parse(e.data)
+    document.querySelector("#counter").innerText = data.height
+  }, true)
+
+</script>
+
+{% endblock %}
+      
