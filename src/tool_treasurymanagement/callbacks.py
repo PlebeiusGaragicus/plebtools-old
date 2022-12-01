@@ -6,7 +6,7 @@ from pywebio import output, pin
 from .config import *
 from .constants import *
 
-from src.api.coinbase import bitcoin_price_history
+# from src.api.coinbase import bitcoin_price_history
 
 from src.calcs import *
 
@@ -62,7 +62,8 @@ def update_price() -> None:
     if unix == None: #pruned node.. or, we just don't have the data for that height
         return
 
-    p = bitcoin_price_history(unix, unix+86400)
+    # p = bitcoin_price_history(unix, unix+86400)
+    p = None
     try:
         price = (p['open'][0] + p['close'][0]) / 2
         logging.debug(f"{price=}")

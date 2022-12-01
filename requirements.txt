@@ -1,8 +1,11 @@
+wheel
+
 requests
-# python-dotenv
-plotly
-pandas
 pyperclip
+
+# numpy
+# plotly
+# pandas
 
 flask
 pywebio
