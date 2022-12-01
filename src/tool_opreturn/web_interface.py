@@ -1,15 +1,26 @@
-import os
-import decimal
 import logging
 import json
-import dotenv
+
 from pywebio import output, pin, config
 
 from src.api.authproxy import AuthServiceProxy, JSONRPCException, CustomJsonEncoder
+from src.settings import AppSettings
 
-from .config import *
+####################################
+# GLOBALS
+
+APP_TITLE = "OP_RETURN Reader"
+
+appsettings: AppSettings = None
+
+# Note: we don't use a global connection anymore because it will time out or otherwise have a bunch of errors happen when the user pauses for as little as 30 seconds
+# rpc_connection: AuthServiceProxy = None
 
 tip = 0
+
+
+########################################
+# CALLBACKS
 
 def prev():
     if pin.pin['height'] == 0:
@@ -34,57 +45,52 @@ def use_latest():
     pin.pin['height'] = tip
     show_opreturns()
 
-@config(title=APP_TITLE, theme='dark')
-def main():
-
-    dotenv.load_dotenv()
-
-    with output.use_scope('main', clear=True):
-        output.put_markdown(f"# {APP_TITLE}")
-
-        output.put_row(
-            [
-                pin.put_input(name='height',label='',type='number',value='', placeholder='Enter Block Height'),
-                output.put_button('Get OP_RETURN data', onclick=show_opreturns)
-            ])
-        output.put_table([
-            [
-                    output.put_button('Prev', disabled=pin.pin['height'] == 0, onclick=prev),
-                    output.put_button("Use latest", onclick=use_latest),
-                    output.put_button('Next', onclick=next)
-            ]
-        ])
-        output.put_collapse(title='Encoding options', content=[
-            pin.put_checkbox('encoding', options=["utf-8","ascii"], value=["utf-8","ascii"], inline=True)
-        ], open=False)
-
-        show_opreturns()
-
-
-
 def show_opreturns():
     output.clear('opreturns')
     with output.put_loading(color='primary'):#, scope='main', position=output.OutputPosition.BOTTOM):
         do_work()
+########################################
+
+
+
+
+def return_AuthProxy() -> AuthServiceProxy:
+    global appsettings
+    user = appsettings['RPC_USER']
+    pswd = appsettings['RPC_PASS']
+    host = appsettings['RPC_HOST']
+    port = appsettings['RPC_PORT']
+
+    rpc_url = f"http://{user}:{pswd}@{host}:{port}"
+    logging.debug(f"{rpc_url=}")
+
+    return AuthServiceProxy(rpc_url)
+
 
 @output.use_scope('opreturns')
 def do_work():
-    user = os.getenv('RPC_USER')
-    pswd = os.getenv('RPC_PASS')
-    host = os.getenv('RPC_HOST')
-    port = os.getenv('RPC_PORT')
+    """
+        - connects to node and gets the block
+    """
 
-    rpc_url = f"http://{user}:{pswd}@{host}:{port}"
-    rpc_connection = AuthServiceProxy(rpc_url)
-    logging.debug(f"{rpc_url=}")
+
+    rpc_connection = return_AuthProxy()
+
+    # Note: shouln't need this because we verify node settings and connection when the app starts
+    # if rpc_connection == None:
+    #     return
+
+
+    # NOTE: I shouldn't need this anymore becuase app will verify node connection at startup
+    # try:
+    #     tip = rpc_connection.getblockcount()
+    # except JSONRPCException as e:
+    #     output.toast(f"ERROR: {e}", color='error', duration=10)
+    #     output.toast(f"Check your RPC connection settings", color='warn', duration=10)
+    #     return
 
     global tip
-    try:
-        tip = rpc_connection.getblockcount()
-    except JSONRPCException as e:
-        output.toast(f"ERROR: {e}", color='error', duration=10)
-        output.toast(f"Check your RPC connection settings", color='warn', duration=10)
-        return
+    tip = rpc_connection.getblockcount()
 
     height = pin.pin['height']
 
@@ -93,10 +99,15 @@ def do_work():
         return
 
     if height > tip:
-        output.toast(f"Block height {height} is higher than the current tip {tip}", position='top', duration=3)
+        output.toast(f"Block height {height} is higher than the current tip {tip}", color='error', duration=3)
         return
 
-    hash = rpc_connection.getblockhash( height )
+    try:
+        hash = rpc_connection.getblockhash( height )
+    except JSONRPCException as e:
+        output.toast(f"ERROR: {e}", color='error', duration=5)
+        return
+
     try:
         block = rpc_connection.getblock( hash, 2 ) # call with verbosity 2 in order to get tx details
     except JSONRPCException as e:
@@ -144,3 +155,51 @@ def do_work():
                             except Exception as e:
                                 pass
     output.put_markdown(f"---")
+    output.put_text("end of list...")
+
+
+
+@config(title=APP_TITLE, theme='dark')
+def main():
+
+    global appsettings
+    appsettings = AppSettings()
+
+    rpc_connection = return_AuthProxy()
+
+    try:
+        info = rpc_connection.getblockchaininfo()
+
+        global tip
+        tip = rpc_connection.getblockcount()
+
+        output.toast(f"Node connected - working on {info['chain']} chain")
+    except JSONRPCException as e:
+        logging.error(f"Error connecting to node: {e}")
+        output.toast("ERROR: Cannot connect to node!", color='error', duration=4)
+        output.put_markdown("# Uh oh - cannot connect to node!")
+        output.put_text("I can't connect to a bitcoin node.  Make sure the node is running.  Also double check your that bitcoind RPC credentials are correct in settings...")
+        output.put_link(name='Open settings', url="./settings")
+        return
+
+
+    with output.use_scope('main', clear=True):
+        output.put_markdown(f"# {APP_TITLE}")
+
+        output.put_row(
+            [
+                pin.put_input(name='height',label='',type='number',value='', placeholder='Enter Block Height'),
+                output.put_button('Get OP_RETURN data', onclick=show_opreturns)
+            ])
+        output.put_table([
+            [
+                    output.put_button('Prev', disabled=pin.pin['height'] == 0, onclick=prev),
+                    output.put_button("Use latest", onclick=use_latest),
+                    output.put_button('Next', onclick=next)
+            ]
+        ])
+        output.put_collapse(title='Encoding options', content=[
+            pin.put_checkbox('encoding', options=["utf-8","ascii"], value=["utf-8","ascii"], inline=True)
+        ], open=False)
+
+    pin.pin_update('height', value=tip)

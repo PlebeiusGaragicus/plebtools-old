@@ -2,8 +2,10 @@
 
 import sys
 import logging
+import json
+import time
 
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 import pywebio
 
 from . import config
@@ -21,6 +23,7 @@ from . import tool_treasurymanagement
 from . import tool_sideloader
 from . import tool_terminal
 
+from . import site_clock
 
 app = Flask(__name__, static_folder='../web/static', template_folder='../web/templates')
 
@@ -29,9 +32,18 @@ app = Flask(__name__, static_folder='../web/static', template_folder='../web/tem
 def index():
     return render_template("index.html", title=config.APP_TITLE)
 
+# @app.route("/clock")
+# def clock():
+#     return render_template("clock.html", title=config.APP_TITLE, tip=69.69)
+
 @app.route("/clock")
 def clock():
-    return render_template("clock.html", title=config.APP_TITLE, tip=69.69)
+    return render_template("clock1.html")
+
+
+@app.route("/listen")
+def listen():
+    return Response(site_clock.respond_to_client(), mimetype='text/event-stream')
 
 @app.route("/contribute")
 def contribute():
