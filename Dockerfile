@@ -23,7 +23,10 @@ COPY /src /src
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 
-USER 1000
+# TODO - this prevents the app from being able to save settings.json
+# I need to look into this
+# RUN chmod -R 777 /data
+# USER 1000
 
 # TODO does this matter?  Can I just use the default.. like 5000?
 EXPOSE 8080

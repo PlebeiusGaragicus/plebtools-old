@@ -3,6 +3,7 @@ import json
 
 from pywebio import output
 
+# SETTINGS_FILE_NAME = "/root/.plebtools/settings.json"
 SETTINGS_FILE_NAME = "settings.json"
 
 class AppSettings:
