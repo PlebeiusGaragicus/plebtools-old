@@ -5,6 +5,8 @@ import logging
 import json
 from functools import partial
 
+from src.api.authproxy import AuthServiceProxy
+
 import pyperclip
 
 from pywebio import output, pin
@@ -77,7 +79,8 @@ def add_command( run: bool=False ):
     output.scroll_to(scope='history', position=output.Position.BOTTOM)
 
     if run:
-        run_command(command)
+        # run_command(command)
+        req_command()
 
 # def copy_to_clipboard( cmd: str ):
 #     """ Copies the command to the clipboard """
@@ -92,7 +95,7 @@ def run_command( cmd: str ):
 
     with output.put_loading(color='success', scope='command_output', position=output.OutputPosition.TOP):
         res = subprocess.run(f"{cmd} | jq", shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # r = requests.post(f"{cmd}")
+        # res = requests.post(f"{cmd}")
 
         # TODO - DON'T BE A NOOB AND PLEASE WRITE BETTER PYTHON CODEZ...!! <3 <3
         # https://stackoverflow.com/questions/12943819/how-to-prettyprint-a-json-file
@@ -132,6 +135,81 @@ def run_command( cmd: str ):
 
 
 
+
+
+
+def req_command():
+    username = str( pin.pin[PIN_USERNAME] )
+    password = str( pin.pin[PIN_PASSWORD] )
+
+    if "" in (username, password):
+        # output.toast("Please enter a username and password", color='danger')
+        return
+
+    ip_address = str( pin.pin[PIN_HOST] )
+    port = str( pin.pin[PIN_PORT] )
+
+    if "" in (ip_address, port):
+        # output.toast("Please enter an IP address and port", color='danger')
+        return
+
+    method = str( pin.pin[PIN_METHOD_SELECT] )
+    params = pin.pin['params']
+
+    if params == '':
+        params = None
+
+
+    rpc_url = f"http://{username}:{password}@{ip_address}:{port}"
+    ap = AuthServiceProxy(rpc_url)
+
+    # res = ap.method
+
+    # if res.status_code != 200:
+    #     output.toast(f"Error: {res.status_code} - {res.reason}", color='danger')
+    #     # logging.error(f"Error: {res.raw}")
+    #     return
+
+    output.put_text(res)
+
+
+# def req_command():
+#     username = str( pin.pin[PIN_USERNAME] )
+#     password = str( pin.pin[PIN_PASSWORD] )
+
+#     if "" in (username, password):
+#         # output.toast("Please enter a username and password", color='danger')
+#         return
+
+#     ip_address = str( pin.pin[PIN_HOST] )
+#     port = str( pin.pin[PIN_PORT] )
+
+#     if "" in (ip_address, port):
+#         # output.toast("Please enter an IP address and port", color='danger')
+#         return
+
+#     method = str( pin.pin[PIN_METHOD_SELECT] )
+#     params = pin.pin['params']
+
+#     if params == '':
+#         params = None
+
+#     # r = requests.get(f"https://pool.braiins.com/accounts/workers/json/btc/")
+
+#     # send a request to the RPC server
+#     res = requests.post(f"http://{ip_address}:{port}", auth=(username, password), json={"method": method, "params": params})
+
+#     if res.status_code != 200:
+#         output.toast(f"Error: {res.status_code} - {res.reason}", color='danger')
+#         # logging.error(f"Error: {res.raw}")
+#         return
+    
+#     output.put_text(res.text)
+
+
+
+
+
 def use_cookie_callback( opt: str ):
     """ Callback for the use cookie checkbox
         This function makes the username input box read only and sets the username to '__cookie__'
@@ -163,7 +241,7 @@ def format_RPC_call(username: str, password: str, ip_address: str, port: str, me
         params = params.split(' ')
         # if the param is a number, type-cast it to int to prevent double quotes from surrounding it
         # else, it's a string (a block hash, for example) and curl needs double quotes around it
-        data_binary['params'] = [ int(p) if p.isdigit() == True else p for p in params ]
+        data_binary['params'] = [ int(p) if p.isdigit() == True else f"{p}" for p in params ]
     else:
         data_binary['params'] = []
 
