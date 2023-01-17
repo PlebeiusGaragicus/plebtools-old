@@ -7,25 +7,25 @@
 # fi
 
 # https://github.com/Start9Labs/filebrowser-wrapper/blob/master/docker_entrypoint.sh#L15-L30
-write_properties_stats_yaml() {
-    echo ' python location: ' $(which python) >> ./stats.yaml
-    echo 'version: 2' > ./stats.yaml
-    echo 'data:' >> ./stats.yaml
-    echo '  Hello:' >> ./stats.yaml
-    echo '    type: string' >> ./stats.yaml
-    echo '    value: admin' >> ./stats.yaml
-    echo '    description: This is .' >> ./stats.yaml
-    echo '    copyable: true' >> ./stats.yaml
-    echo '    masked: false' >> ./stats.yaml
-    echo '    qr: false' >> ./stats.yaml
-    echo '  World:' >> ./stats.yaml
-    echo '    type: string' >> ./stats.yaml
-    echo '    value: "'"$password"'"' >> ./stats.yaml
-    echo '    description: This randomly-generated.' >> ./stats.yaml
-    echo '    copyable: true' >> ./stats.yaml
-    echo '    masked: true' >> ./stats.yaml
-    echo '    qr: false' >> ./stats.yaml
-}
+# write_properties_stats_yaml() {
+#     echo ' python location: ' $(which python) >> ./stats.yaml
+#     echo 'version: 2' > ./stats.yaml
+#     echo 'data:' >> ./stats.yaml
+#     echo '  Hello:' >> ./stats.yaml
+#     echo '    type: string' >> ./stats.yaml
+#     echo '    value: admin' >> ./stats.yaml
+#     echo '    description: This is .' >> ./stats.yaml
+#     echo '    copyable: true' >> ./stats.yaml
+#     echo '    masked: false' >> ./stats.yaml
+#     echo '    qr: false' >> ./stats.yaml
+#     echo '  World:' >> ./stats.yaml
+#     echo '    type: string' >> ./stats.yaml
+#     echo '    value: "'"$password"'"' >> ./stats.yaml
+#     echo '    description: This randomly-generated.' >> ./stats.yaml
+#     echo '    copyable: true' >> ./stats.yaml
+#     echo '    masked: true' >> ./stats.yaml
+#     echo '    qr: false' >> ./stats.yaml
+# }
 
 # write_properties_stats_yaml()
 

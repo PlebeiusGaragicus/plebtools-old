@@ -14,9 +14,10 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # COPY .env .env
-# COPY /data /data
 COPY /web /web
 COPY /src /src
+COPY /data /data
+RUN chmod -R 777 /data
 
 
 
@@ -25,8 +26,7 @@ RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 
 # TODO - this prevents the app from being able to save settings.json
 # I need to look into this
-# RUN chmod -R 777 /data
-# USER 1000
+USER 1000
 
 # TODO does this matter?  Can I just use the default.. like 5000?
 EXPOSE 8080
