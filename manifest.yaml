@@ -11,11 +11,8 @@ version: 0.2.0
 
 release-notes: >-
   Still very much a work in progress.
-  
-  I am importing code, adding features and tidying up.
 
-  -Added a settings 'app' (not done yet)
-  -Changed layout of the main page
+  Maybe I'll finish this project before I die... maybe not.
 
 license: mit
 
@@ -79,7 +76,31 @@ interfaces:
     protocols:
       - tcp
       - http
-dependencies: {}
+
+
+dependencies:
+  # btc-rpc-proxy:
+  #   version: ">=0.3.2.6 <0.4.0"
+  #   requirement:
+  #     type: "opt-out"
+  #     how: Can alternatively use the internal full archival bitcoind node or configure an external bitcoin node.
+  #   description: Used to fetch validated blocks.
+  #   config:
+  #     check:
+  #       type: script
+  #     auto-configure:
+  #       type: script
+  bitcoind:
+    version: ">=0.21.1.2 <26.0.0"
+    critical: trie
+    requirement:
+      type: "required"
+    description: A local full archival node is required to run PlebTools.
+    # config:
+    #   check:
+    #     type: script
+    #   auto-configure:
+    #     type: script
 
 
 backup:

@@ -32,7 +32,8 @@
 # health-check.sh &
 
 # run the application
-python -m src
+exec python -m src
+
 # https://github.com/goshiz/start9labs-havend-wrapper/blob/master/docker_entrypoint.sh
 # exec /usr/bin/local python3 -m src
 
