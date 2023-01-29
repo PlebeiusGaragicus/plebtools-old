@@ -47,7 +47,7 @@ main:
   entrypoint: "docker_entrypoint.sh"
   args: []
   mounts:
-  # TODO _ I need to figure out how to mount the volume to the docker container
+    # TODO _ I need to figure out how to mount the volume to the docker container
     main: /root/.plebtools
 
 health-checks: {}
@@ -64,7 +64,7 @@ interfaces:
     name: User Interface
     description: Launch the web interface for PlebTools
     tor-config:
-    # Port mappings are from the external port to the internal container port
+      # Port mappings are from the external port to the internal container port
       port-mapping:
         8080: "8080"
     # Port mappings are from the external port to the internal container port
@@ -76,7 +76,6 @@ interfaces:
     protocols:
       - tcp
       - http
-
 
 dependencies:
   # btc-rpc-proxy:
@@ -92,7 +91,7 @@ dependencies:
   #       type: script
   bitcoind:
     version: ">=0.21.1.2 <26.0.0"
-    critical: trie
+    # critical: true
     requirement:
       type: "required"
     description: A local full archival node is required to run PlebTools.
@@ -102,20 +101,19 @@ dependencies:
     #   auto-configure:
     #     type: script
 
-
 backup:
   create:
     type: docker
     image: compat
     system: true
-    entrypoint: compat 
+    entrypoint: compat
     args:
       - duplicity
       - create
       - /mnt/backup
       - /root/data
     mounts:
-      BACKUP: "/mnt/backup" 
+      BACKUP: "/mnt/backup"
       main: "/root/data"
   restore:
     type: docker

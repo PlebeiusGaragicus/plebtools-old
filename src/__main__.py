@@ -54,7 +54,7 @@ def setup_logging() -> None:
         format="%(name)s [%(levelname)s] (%(filename)s @ %(lineno)d) %(message)s",
 
         ### TODO CRASHED! PermissionError: [Errno 13] Permission denied: '/debug.log'
-        handlers=[logging.FileHandler("./debug.log", mode='a'), logging.StreamHandler(sys.stdout)] if config.DEBUG == True else [logging.StreamHandler(sys.stdout)],
+        handlers=[logging.FileHandler("./data/debug.log", mode='a'), logging.StreamHandler(sys.stdout)] if config.DEBUG == True else [logging.StreamHandler(sys.stdout)],
     )
 
     if config.DEBUG == True:
