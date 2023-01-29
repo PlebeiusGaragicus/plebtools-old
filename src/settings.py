@@ -1,3 +1,6 @@
+""" TODO: Add docstring
+"""
+
 import logging
 import json
 
@@ -7,12 +10,14 @@ from pywebio import output
 SETTINGS_FILE_NAME = "./data/settings.json"
 
 class AppSettings:
-    # TODO - add feature of providing a filename
-    def __init__(self, file_name: str = None) -> None:
+    """ TODO: Add docstring
+    """
+    def __init__(self) -> None:
         try:
-            with open(SETTINGS_FILE_NAME, 'r') as f:
-                self._settings_json = json.load(f)
-                logging.debug(f"Settings loaded: {self._settings_json=}")
+            with open(SETTINGS_FILE_NAME, 'r', encoding="utf-8") as settings_file:
+                self._settings_json = json.load( settings_file )
+                logging.debug("Settings loaded: %s", self._settings_json)
+
         except FileNotFoundError:
             logging.warning("No settings file found, creating a new blank one")
             self._settings_json = {
@@ -41,13 +46,13 @@ class AppSettings:
     def save_settings(self):
         """Save settings to file"""
 
-        if self._settings_json == None:
+        if self._settings_json is None:
             logging.error("Settings not loaded, not saving")
             output.toast("Settings not loaded, not saving", duration=5, color='error')
             return
 
-        with open(SETTINGS_FILE_NAME, 'w') as f:
-            json.dump(self._settings_json, f, indent=4)
+        with open(SETTINGS_FILE_NAME, 'w', encoding="utf-8") as settings_file:
+            json.dump(self._settings_json, settings_file, indent=4)
 
         output.toast("Settings saved")
 

@@ -2,28 +2,33 @@
 
 import sys
 import logging
-import json
-import time
 
 from flask import Flask, render_template, Response
 import pywebio
 
 from . import config
 
-from . import tool_dashboard
+# BUILT-IN TOOLS
+from . import tool_settings
+from . import site_clock
+
+# GOOD ENOUGH TO SHIP
 from . import tool_rpccurlhelper
 from . import tool_currencyconvert
-from . import tool_miningcalc
 from . import tool_opreturn
+
+# WORKING ON RIGHT NOW
+from . import tool_miningcalc
+
+# ON HOLD...
+from . import tool_dashboard
 from . import tool_braiinspool
-from . import tool_settings
 from . import tool_blockstreamsat
 from . import tool_historicalanalysis
 from . import tool_treasurymanagement
 from . import tool_sideloader
 from . import tool_terminal
 
-from . import site_clock
 
 app = Flask(__name__, static_folder='../web/static', template_folder='../web/templates')
 
@@ -74,17 +79,20 @@ def setup_logging() -> None:
 if __name__ == "__main__":
     setup_logging()
 
-    app.add_url_rule('/dashboard', 'dashboard', pywebio.platform.flask.webio_view( tool_dashboard.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    app.add_url_rule('/settings', 'settings', pywebio.platform.flask.webio_view( tool_settings.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+
     app.add_url_rule('/curl_formatter', 'curl_formatter', pywebio.platform.flask.webio_view( tool_rpccurlhelper.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/currency_converter', 'currency_converter', pywebio.platform.flask.webio_view( tool_currencyconvert.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
-    app.add_url_rule('/mining_calcs', 'mining_calcs', pywebio.platform.flask.webio_view( tool_miningcalc.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/opreturn', 'opreturn', pywebio.platform.flask.webio_view( tool_opreturn.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    
+    app.add_url_rule('/mining_calcs', 'mining_calcs', pywebio.platform.flask.webio_view( tool_miningcalc.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
+    
+    app.add_url_rule('/dashboard', 'dashboard', pywebio.platform.flask.webio_view( tool_dashboard.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/braiinspool', 'braiinspool', pywebio.platform.flask.webio_view( tool_braiinspool.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/blockstreamsat', 'blockstreamsat', pywebio.platform.flask.webio_view( tool_blockstreamsat.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/historicalanalysis', 'historicalanalysis', pywebio.platform.flask.webio_view( tool_historicalanalysis.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/treasurymanagement', 'treasurymanagement', pywebio.platform.flask.webio_view( tool_treasurymanagement.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/sideloader', 'sideloader', pywebio.platform.flask.webio_view( tool_sideloader.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
     app.add_url_rule('/terminal', 'terminal', pywebio.platform.flask.webio_view( tool_terminal.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
-    app.add_url_rule('/settings', 'settings', pywebio.platform.flask.webio_view( tool_settings.main ), methods=['GET', 'POST', 'OPTIONS'])  # need GET,POST and OPTIONS methods
 
     app.run(host='0.0.0.0', port=config.PORT, debug=config.DEBUG)

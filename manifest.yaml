@@ -129,6 +129,25 @@ backup:
       BACKUP: "/mnt/backup"
       main: "/root/data"
 
+actions:
+  delete-debug-log:
+    name: Delete Debug Log
+    description: This action will delete the debug.log file (only while service is stopped)
+    allowed-statuses:
+      - stopped
+    implementation:
+      type: docker
+      image: main
+      system: false
+      entrypoint: delete-debug-log.sh
+      # args: ["reset-first-user"]
+      args: []
+      # TODO - what is this for?
+      mounts:
+        main: /data
+      # TODO - what is this for?
+      io-format: json
+
 # https://docs.start9.com/latest/developer-docs/specification/js-procedure
 migrations:
   from:

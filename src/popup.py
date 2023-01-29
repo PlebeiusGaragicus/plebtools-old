@@ -31,7 +31,7 @@ def popup_input(pins, names, title, onchangepinname=None, callback=None):
     ], onclick=onclick))
     output.popup(title=title, content=pins, closable=False)
     
-    if not onchangepinname == None:
+    if not onchangepinname is None:
         pin.pin_on_change(onchangepinname, onchange=callback)
 
     event.wait()
@@ -46,7 +46,7 @@ def popup_input(pins, names, title, onchangepinname=None, callback=None):
 
 
 
-def popup_OK(pins, title) -> None:
+def popup_ok(pins, title) -> None:
     """
         Show a form in popup window and wait for user to press 'OK' button.
         :param list pins: pin output list.
@@ -77,13 +77,15 @@ def popup_OK(pins, title) -> None:
 
 #################################
 def popup_example( title: str) -> bool:
+    """TODO: Docstring for popup_example.
+    """
 
     result = popup_input([
         pin.put_input(name='example_name', label='say hi', type='text', value="")
         ], names=['example_name'], title=title)
 
     # USER HIT CANCEL
-    if result == None:
+    if result is None:
         return -1
 
     # VERIFY USER INPUT
